@@ -1,1 +1,5 @@
-{}
+{
+    "projectId": "x3jgv2",
+    "screenshotOnRunFailure": false,
+    "defaultCommandTimeout": 30000
+}

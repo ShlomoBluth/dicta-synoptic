@@ -13,8 +13,7 @@ Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySec
     cy.get('div[class="button-holder-box"]').within(()=>{
         cy.get('button').click()
     })
-    cy.wait('@api')
-    cy.get('p').contains(message).should('be.visible')
+    cy.get('p',{timeout:1000*delaySeconds+30000}).contains(message).should('be.visible')
 })
 
 Cypress.Commands.add('setLanguageMode',(language)=>{
@@ -34,7 +33,7 @@ Cypress.Commands.add('setLanguageMode',(language)=>{
       }
       if(classAttr!=languageMode)
       {
-        cy.get('a').contains(/^עברית$/||/^English$/).click();
+        cy.get('a').contains(/^עברית$|^English$/g).click();
       }
       if(languageMode=='he'){
         cy.get('a').contains(/^English$/).should('exist')
