@@ -6,7 +6,7 @@ Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySec
     cy.intercept('POST', '/api', {
         delayMs:1000*delaySeconds,
         statusCode: status
-    },).as('api')
+    },)
     cy.setLanguageMode(language)
     cy.get('input[type="file"]').attachFile('חולין.txt');
     cy.get('input[type="file"]').attachFile('תמיד.txt');

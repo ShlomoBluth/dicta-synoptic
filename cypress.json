@@ -1,5 +1,9 @@
 {
     "projectId": "x3jgv2",
     "screenshotOnRunFailure": false,
-    "defaultCommandTimeout": 30000
+    "defaultCommandTimeout": 30000,
+    "retries": {
+        "runMode": 1,
+        "openMode": 1
+    }
 }
