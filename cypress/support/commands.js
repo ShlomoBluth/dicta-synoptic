@@ -1,18 +1,29 @@
 
 import 'cypress-file-upload';
 
+Cypress.Commands.add('synopticRun',(language)=>{
+  cy.setLanguageMode(language)
+    cy.get('input[type="file"]').attachFile('חולין.txt');
+    cy.get('input[type="file"]').attachFile('תמיד.txt');
+    cy.get(':nth-child(3) > .bt-close > img').click()
+    cy.get('div[class="button-holder-box"]').within(()=>{
+        cy.get('button').click()
+    })
+
+})
 
 Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySeconds=0})=>{
     cy.intercept('POST', '/api', {
         delayMs:1000*delaySeconds,
         statusCode: status
     },)
-    cy.setLanguageMode(language)
-    cy.get('input[type="file"]').attachFile('חולין.txt');
-    cy.get('input[type="file"]').attachFile('תמיד.txt');
-    cy.get('div[class="button-holder-box"]').within(()=>{
-        cy.get('button').click()
-    })
+    cy.synopticRun(language)
+    // cy.setLanguageMode(language)
+    // cy.get('input[type="file"]').attachFile('חולין.txt');
+    // cy.get('input[type="file"]').attachFile('תמיד.txt');
+    // cy.get('div[class="button-holder-box"]').within(()=>{
+    //     cy.get('button').click()
+    // })
     cy.get('p',{timeout:1000*delaySeconds+30000}).contains(message).should('be.visible')
 })
 
