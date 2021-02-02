@@ -12,19 +12,40 @@ Cypress.Commands.add('synopticRun',(language)=>{
 
 })
 
+Cypress.Commands.add('snakeRowsRun',(language)=>{
+  cy.setLanguageMode(language)
+  cy.get('#btn-radios-1 > :nth-child(2)').click()
+  cy.get('input[type="file"]').attachFile('res.xlsx')
+  cy.get('.px-4 > .btn').click()
+})
+
 Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySeconds=0})=>{
-    cy.intercept('POST', '/api', {
+  cy.intercept('POST', '/api', {
+      delayMs:1000*delaySeconds,
+      statusCode: status
+  },)
+  cy.synopticRun(language)
+  if(delaySeconds>0){
+    cy.get('p',{timeout:1000*delaySeconds}).contains(message).should('be.visible')
+  }else{
+    ccy.get('p').contains(message).should('be.visible')
+  }
+})
+
+Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',delaySeconds=0})=>{
+    cy.intercept( url+'**', {
         delayMs:1000*delaySeconds,
         statusCode: status
     },)
-    cy.synopticRun(language)
-    // cy.setLanguageMode(language)
-    // cy.get('input[type="file"]').attachFile('חולין.txt');
-    // cy.get('input[type="file"]').attachFile('תמיד.txt');
-    // cy.get('div[class="button-holder-box"]').within(()=>{
-    //     cy.get('button').click()
-    // })
-    cy.get('p',{timeout:1000*delaySeconds+30000}).contains(message).should('be.visible')
+    cy.snakeRowsRun(language)
+    if(delaySeconds>0){
+      cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
+    }else{
+      cy.get('[class*="spinner"]').should('not.be.visible')
+    }
+    if(message.length>0){
+      cy.contains(message).should('exist')
+    }
 })
 
 Cypress.Commands.add('setLanguageMode',(language)=>{

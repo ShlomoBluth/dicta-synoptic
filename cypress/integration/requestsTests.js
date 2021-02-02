@@ -11,7 +11,7 @@ describe('RequestsTests',()=>{
     })
   
 
-    it('Error message for response with status code 500 when clicking the run button of synoptic page'+
+    it('Error message for api response with status code 500 when clicking the run button of synoptic page'+
     ' in hebrew mode',()=>{
        cy.synopticRequest({
            language:'Hebrew',
@@ -21,7 +21,7 @@ describe('RequestsTests',()=>{
        })
     })
 
-    it('Error message for response with status code 500 when clicking the run button of synoptic page'+
+    it('Error message for api response with status code 500 when clicking the run button of synoptic page'+
     ' in english mode',()=>{
         cy.synopticRequest({
             language:'English',
@@ -31,7 +31,7 @@ describe('RequestsTests',()=>{
         })
     })
 
-    it('Error message for response with a delay of 15 seconds when clicking the run button'+
+    it('Error message for api response with a delay of 15 seconds when clicking the run button'+
     ' of synoptic page in hebrew mode',()=>{
         cy.synopticRequest({
             language:'Hebrew',
@@ -41,7 +41,7 @@ describe('RequestsTests',()=>{
         })
     })
 
-    it('Error message for response with a delay of 15 seconds when clicking the run button'+
+    it('Error message for api response with a delay of 15 seconds when clicking the run button'+
     ' of synoptic page in english mode',()=>{
         cy.synopticRequest({
             language:'English',
@@ -51,5 +51,84 @@ describe('RequestsTests',()=>{
         })
     })
 
+    it('Error message for /snakeApi/upload response with status code 500 when clicking the run button of synoptic page'+
+    ' in hebrew mode',()=>{
+       cy.snakeRowsRequest({
+           url:'/snakeApi/upload',
+           language:'Hebrew',
+           status:500,
+           message:'אופס יש לנו בעיה נסו שנית, או בקרו באתר מאוחר יותר',
+       })
+    })
+
+    it('Error message for /snakeApi/upload response with status code 500 when clicking the run button of synoptic page'+
+    ' in english mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/upload',
+            language:'English',
+            status:500,
+            message:'Oops. Something went wrong Please try again later',
+        })
+    })
+
+    it('Error message for /snakeApi/upload response with a delay of 2 minutes when clicking the run button'+
+    ' of synoptic page in hebrew mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/upload',
+            language:'Hebrew',
+            message:'אופס יש לנו בעיה נסו שנית, או בקרו באתר מאוחר יותר',
+            delaySeconds: 60*2
+        })
+    })
+
+    it('Error message for /snakeApi/upload response with a delay of 2 minutes when clicking the run button'+
+    ' of synoptic page in english mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/upload',
+            language:'English',
+            message:'Oops. Something went wrong Please try again later',
+            delaySeconds: 60*2
+        })
+    })
+
+    it('Error message for /snakeApi/poll response with status code 500 when clicking the run button of synoptic page'+
+    ' in hebrew mode',()=>{
+       cy.snakeRowsRequest({
+           url:'/snakeApi/poll/',
+           language:'Hebrew',
+           status:500,
+           message:'אופס יש לנו בעיה נסו שנית, או בקרו באתר מאוחר יותר',
+       })
+    })
+
+    it('Error message for /snakeApi/poll response with status code 500 when clicking the run button of synoptic page'+
+    ' in english mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/poll/',
+            language:'English',
+            status:500,
+            message:'Oops. Something went wrong Please try again later',
+        })
+    })
+
+    it('Error message for /snakeApi/poll response with a delay of 10 minutes when clicking the run button'+
+    ' of synoptic page in hebrew mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/poll/',
+            language:'Hebrew',
+            message:'אופס יש לנו בעיה נסו שנית, או בקרו באתר מאוחר יותר',
+            delaySeconds: 60*10
+        })
+    })
+
+    it('Error message for /snakeApi/poll response with a delay of 10 minutes when clicking the run button'+
+    ' of synoptic page in english mode',()=>{
+        cy.snakeRowsRequest({
+            url:'/snakeApi/poll/',
+            language:'English',
+            message:'Oops. Something went wrong Please try again later',
+            delaySeconds: 60*10
+        })
+    })
     
 })
