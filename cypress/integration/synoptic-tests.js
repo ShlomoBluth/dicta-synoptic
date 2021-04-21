@@ -3,11 +3,11 @@
 
 const path = require('path')
 
+let downloadsFolder = Cypress.config('downloadsFolder')
 
 //run basic tests on synoptic
 describe('synoptic-tests',()=>{
 
-    let downloadsFolder = Cypress.config('downloadsFolder')
 
     beforeEach(() => {
         cy.visit('/')
@@ -243,8 +243,8 @@ describe('synoptic-tests',()=>{
         //         fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
         //     })
         // }).then(()=>{
-            const filename = path.join(downloadsFolder,'test3000lines.csv')
-            cy.readFile(filename,{timeout:15000}).should('not.be.null')
+            const filename = path.join(downloadsFolder,'test3000lines.xlsx')
+            cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
             const downloadedFilename = path.join(downloadsFolder,'test3000lines.xlsx')
             cy.task('readExcelFile', downloadedFilename,{timeout:900000})
             // returns an array of lines read from Excel file
