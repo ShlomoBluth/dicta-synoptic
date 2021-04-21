@@ -7,7 +7,9 @@
     "cy:run": "npm run runChrome & npm run runFirefox",
     "cy:runSpec": "npm run runChrome -- --spec %npm_config_spec% & npm run runFirefox -- --spec %npm_config_spec%",
     "runChrome": "cypress run --browser chrome  --record --key c1c71d00-c206-4fa2-b4db-f76af85e322f",
-    "runFirefox": "cypress run --browser firefox  --record --key c1c71d00-c206-4fa2-b4db-f76af85e322f"
+    "runFirefox": "cypress run --browser firefox  --record --key c1c71d00-c206-4fa2-b4db-f76af85e322f",
+    "report:merge": "mochawesome-merge cypress/results/json/*.json > index.json",
+    "report:generate": "marge index.json --reportDir public --assetsDir public/assets --reportPageTitle index.html"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,10 @@
   "devDependencies": {
     "cypress": "^7.1.0",
     "cypress-file-upload": "^4.1.1",
+    "cypress-multi-reporters": "^1.5.0",
+    "mocha": "^8.3.2",
+    "mochawesome": "^6.2.2",
+    "mochawesome-merge": "^4.2.0",
     "node-xlsx": "^0.16.1"
   },
   "dependencies": {
