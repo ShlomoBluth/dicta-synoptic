@@ -244,7 +244,7 @@ describe('synoptic-tests',()=>{
         //     })
         // }).then(()=>{
             const filename = path.join(downloadsFolder,'test3000lines.xlsx')
-            cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
+            cy.readFile('__w/dicta-synoptic/dicta-synoptic/cypress/downloads/test3000lines.xlsx','binary',{timeout:15000}).should('not.be.null')
             const downloadedFilename = path.join(downloadsFolder,'test3000lines.xlsx')
             cy.task('readExcelFile', downloadedFilename,{timeout:900000})
             // returns an array of lines read from Excel file
