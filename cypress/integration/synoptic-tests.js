@@ -245,7 +245,7 @@ describe('synoptic-tests',()=>{
         // }).then(()=>{
             const filename = path.join(downloadsFolder,'8d21a218-8e4f-442b-8aa0-884b5992e407-vert.xlsx')
             const downloadedFilename = path.join(downloadsFolder,'8d21a218-8e4f-442b-8aa0-884b5992e407-vert.xlsx')
-            cy.readFile(filename,{timeout:15000}).should('not.be.null')
+            cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
             cy.task('readExcelFile', downloadedFilename,{timeout:900000})
             // returns an array of lines read from Excel file
             .should('have.length', 93530)
