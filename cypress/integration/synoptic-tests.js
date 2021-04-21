@@ -243,12 +243,12 @@ describe('synoptic-tests',()=>{
         //         fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
         //     })
         // }).then(()=>{
-            const filename = path.join(downloadsFolder,'8d21a218-8e4f-442b-8aa0-884b5992e407-vert.xlsx')
+            const filename = path.join(downloadsFolder,'test3000lines.xlsx')
             cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
-            // const downloadedFilename = path.join(downloadsFolder,'8d21a218-8e4f-442b-8aa0-884b5992e407-vert.xlsx')
-            // cy.task('readExcelFile', downloadedFilename,{timeout:900000})
-            // // returns an array of lines read from Excel file
-            // .should('have.length', 93530)
+            const downloadedFilename = path.join(downloadsFolder,'test3000lines.xlsx')
+            cy.task('readExcelFile', downloadedFilename,{timeout:900000})
+            // returns an array of lines read from Excel file
+            .should('have.length', 93530)
             // .then((list) => {
             //     cy.wrap(list[0]).should('have.length',15)
             //     cy.log(list[2][1])
