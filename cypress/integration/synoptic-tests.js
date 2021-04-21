@@ -248,7 +248,7 @@ describe('synoptic-tests',()=>{
             const downloadedFilename = path.join(downloadsFolder,'test3000lines.xlsx')
             cy.task('readExcelFile', 'cypress/fixtures/test3000lines.xlsx',{timeout:900000})
             // returns an array of lines read from Excel file
-            .should('have.length', 93530)
+            .should('have.length', 47265)
             // .then((list) => {
             //     cy.wrap(list[0]).should('have.length',15)
             //     cy.log(list[2][1])
