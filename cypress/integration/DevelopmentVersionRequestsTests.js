@@ -7,7 +7,7 @@
 describe('DevelopmentVersionRequestsTests',()=>{
     
     beforeEach(() => {
-        cy.visit('https://synoptic-dev--condescending-darwin-5b410d.netlify.app/')
+        cy.visit('/')
     })
   
 

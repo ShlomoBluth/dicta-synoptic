@@ -1,5 +1,6 @@
 {
     "projectId": "x3jgv2",
+    "baseUrl":"https://synoptic-dev--condescending-darwin-5b410d.netlify.app/",
     "screenshotOnRunFailure": false,
     "defaultCommandTimeout": 30000,
     "retries": {

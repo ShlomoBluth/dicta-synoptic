@@ -1,15 +1,22 @@
 
 import 'cypress-file-upload';
 
-Cypress.Commands.add('synopticRun',(language)=>{
-  cy.setLanguageMode(language)
-    cy.get('input[type="file"]').attachFile('חולין.txt');
-    cy.get('input[type="file"]').attachFile('תמיד.txt');
-    cy.get(':nth-child(3) > .bt-close > img').click()
-    cy.get('div[class="button-holder-box"]').within(()=>{
-        cy.get('button').click()
-    })
 
+
+Cypress.Commands.add('synopticRun',({language,files})=>{
+  cy.setLanguageMode(language)
+  // cy.get('input[type="file"]').attachFile(files, { subjectType: 'drag-n-drop' })
+  // cy.log(files[files.length-1]).pause()
+  for(let i=0;i<files.length;i++){
+    cy.get('input[type="file"]').attachFile(files[i], { subjectType: 'drag-n-drop' })
+  }
+  cy.get('div[class="button-holder-box"]').within(()=>{
+      cy.get('button').click()
+  })
+})
+
+Cypress.Commands.add('waitForRequest',()=>{
+  cy.get('div[class="requesting-wrapper container"]',{timeout:180000}).should('not.exist')
 })
 
 Cypress.Commands.add('snakeRowsRun',(language)=>{
@@ -20,7 +27,7 @@ Cypress.Commands.add('snakeRowsRun',(language)=>{
 })
 
 Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySeconds=0})=>{
-  cy.intercept('POST', '/api', {
+  cy.intercept('POST', '**/api/**', {
       delayMs:1000*delaySeconds,
       statusCode: status
   },)
@@ -28,7 +35,7 @@ Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySec
   if(delaySeconds>0){
     cy.get('p',{timeout:1000*delaySeconds}).contains(message).should('be.visible')
   }else{
-    ccy.get('p').contains(message).should('be.visible')
+    cy.get('p').contains(message).should('be.visible')
   }
 })
 
@@ -73,4 +80,52 @@ Cypress.Commands.add('setLanguageMode',(language)=>{
         cy.get('a').contains(/^עברית$/).should('exist')
       }
     })
-  })  
+})
+
+Cypress.Commands.add('testAllRows',(rows)=>{
+  function testAllRows(rows){
+    if(rows.length==0){
+      return true 
+    }
+    cy.testRow(rows[0]).then(rew=>{
+      //cy.wrap(rew).should(true)
+      cy.testAllRows(rows.slice(1))
+    })
+  }
+  testAllRows(rows)
+})
+
+Cypress.Commands.add('testRow',(row)=>{
+  let word
+  cy.get(row).children('[class="second-col"]').first().then(col=>{
+    word=col.text()
+  }).then(()=>{
+    cy.get(row).children('[class="second-col"]').then(cols=>{
+      cy.filterLength(cols,word).then(length=>{
+        if(row.className!='not-all-same'){
+          cy.wrap(length).should('eq',cols.length)
+        }else{
+          cy.wrap(length).should('not.eq',cols.length)
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('filterLength',(array,wordFilter)=>{
+  let filteredArray=[]
+  for(let i=0;i<array.length;i++){
+    if(array[i].textContent==wordFilter){
+      filteredArray.push(array[i].textContent)
+    }
+  }
+  return filteredArray.length
+})
+
+Cypress.Commands.add('removeDownloadsFiles',()=>{
+  cy.exec('npx rimraf cypress/downloads/*')
+})
+
+Cypress.Commands.add('removeFixturesXLSXFiles',()=>{
+  cy.exec('npx rimraf cypress/fixtures/*.xlsx')
+})
