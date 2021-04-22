@@ -249,7 +249,7 @@ describe('synoptic-tests',()=>{
             }else{
                 cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
                     fileName=stdout
-                    filename = path.join(downloadsFolder,fileName)
+                    filename = path.join(fileName)
                 })
             }
         }).then(()=>{
