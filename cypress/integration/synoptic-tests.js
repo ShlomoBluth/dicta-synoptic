@@ -244,15 +244,14 @@ describe('synoptic-tests',()=>{
             if(Cypress.platform.includes('win')){
                 cy.exec('dir cypress\\downloads /s /b').its('stdout').then(stdout=>{
                     fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
-                    filename = path.join(downloadsFolder,fileName)
                 })
             }else{
                 cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
-                    fileName=stdout
-                    filename = path.join(downloadsFolder,fileName)
+                    fileName=stdout.substring(stdout.firstIndexOf(':')+1)
                 })
             }
         }).then(()=>{
+            filename = path.join(downloadsFolder,fileName)
             cy.log(fileName+' fileName')
             cy.log(downloadsFolder+' downloadsFolder')
             cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
