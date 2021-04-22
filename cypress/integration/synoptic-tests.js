@@ -245,7 +245,7 @@ describe('synoptic-tests',()=>{
                     fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
                 })
             }else{
-                cy.exec('ls').its('stdout').then(stdout=>{
+                cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
                     fileName=stdout
                 })
             }
