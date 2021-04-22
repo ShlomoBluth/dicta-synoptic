@@ -226,7 +226,6 @@ describe('synoptic-tests',()=>{
     it('Synopsis builder download',()=>{
         cy.removeDownloadsFiles()
         cy.removeFixturesXLSXFiles()
-        cy.log(Cypress.platform.includes('win')).pause()
         cy.synopticRun({
             language:'Hebrew',
             files:['חגיגה.txt','מכות.txt']
