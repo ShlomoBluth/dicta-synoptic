@@ -230,7 +230,8 @@ describe('synoptic-tests',()=>{
             language:'Hebrew',
             files:['חגיגה.txt','מכות.txt']
         })        
-        cy.waitForRequest()
+        //cy.waitForRequest()
+        cy.get('[class*="spinner"]',{timeout:60000}).should('not.exist')
         let fileName
         //cy.get('div[class="btn-left"]').click({force:true})
         cy.window().document().then(function (doc) {
