@@ -224,45 +224,56 @@ describe('synoptic-tests',()=>{
     // })
 
     it('Synopsis builder download',()=>{
-        // cy.removeDownloadsFiles()
-        // cy.removeFixturesXLSXFiles()
-        // cy.synopticRun({
-        //     language:'Hebrew',
-        //     files:['test1.txt','test2.txt']
-        // })
-        // cy.waitForRequest()
-        // let fileName
-        // cy.get('div[class="btn-left"]').click({force:true})
-        // cy.window().document().then(function (doc) {
-        //     doc.addEventListener('click', () => {
-        //       setTimeout(function () { doc.location.reload() }, 5000)
-        //     })
-        //     cy.get('a').contains('הורד את כל התוצאות').click({force:true})
-        // }).then(()=>{
-        //     cy.exec('dir cypress\\downloads /s /b').its('stdout').then(stdout=>{
-        //         fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
-        //     })
-        // }).then(()=>{
-            const filename = path.join(downloadsFolder,'test3000lines.xlsx')
-            cy.readFile('cypress/fixtures/test3000lines.xlsx','binary',{timeout:15000}).should('not.be.null')
-            const downloadedFilename = path.join(downloadsFolder,'test3000lines.xlsx')
-            cy.task('readExcelFile', 'cypress/fixtures/test3000lines.xlsx',{timeout:900000})
+        cy.removeDownloadsFiles()
+        cy.removeFixturesXLSXFiles()
+        cy.log(Cypress.platform.includes('win')).pause()
+        cy.synopticRun({
+            language:'Hebrew',
+            files:['חגיגה.txt','מכות.txt']
+        })        
+        cy.waitForRequest()
+        let fileName
+        //cy.get('div[class="btn-left"]').click({force:true})
+        cy.window().document().then(function (doc) {
+            doc.addEventListener('click', () => {
+              setTimeout(function () { doc.location.reload() }, 5000)
+            })
+            cy.get('a').contains('הורד את כל התוצאות').click({force:true})
+        }).then(()=>{
+            if(Cypress.platform.includes('win')){
+                cy.exec('dir cypress\\downloads /s /b').its('stdout').then(stdout=>{
+                    fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
+                })
+            }else{
+                cy.exec('ls').its('stdout').then(stdout=>{
+                    fileName=stdout
+                })
+            }
+        }).then(()=>{
+            const filename = path.join(downloadsFolder,fileName)
+            cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
+            const downloadedFilename = path.join(downloadsFolder,fileName)
+            cy.task('readExcelFile', downloadedFilename,{timeout:1800000})
             // returns an array of lines read from Excel file
-            .should('have.length', 47265)
-            // .then((list) => {
-            //     cy.wrap(list[0]).should('have.length',15)
-            //     cy.log(list[2][1])
-            //     for(let i=1;i<list[2].length;i++){
-            //         if(list[2][i]=='** Major **'||list[2][i]=='** Minor'){
-            //             expect(list[1][i]).not.eq(list[0][i])
-            //         }else if(list[2][i]=='** Gap **'){
-            //             expect(((list[1][i]==undefined)||(list[0][i]==undefined))).to.be.true
-            //         }else{
-            //             expect(list[1][i]).eq(list[0][i])
-            //         }
-            //     }
-            // })
-        //})
+            .should('have.length', 33766)
+            .then((list) => {
+                // cy.wrap(list[0]).should('have.length',15)
+                // cy.log(list[2][1])
+                for(let i=1;i<list.length;i++){
+                    if(list[i][2]=='** Major **'||list[i][2]=='**Minor'){
+                        expect(list[i][0]).not.eq(list[i][1])
+                    }else if(list[i][2]=='** Gap **'){
+                        expect(((list[i][0]==undefined)||(list[i][1]==undefined))).to.be.true
+                    }else{
+                        var regex = new RegExp("[0-9]+");
+                        if(!regex.test(list[i][1])&&!regex.test(list[i][0])){
+                            expect((list[i][0]).replace(/\(|:|,/g,''))
+                            .eq((list[i][1]).replace(/\(|:|,/g,''))
+                        }
+                    }
+                }
+            })
+        })
     })
 
 
