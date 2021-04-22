@@ -224,7 +224,7 @@ describe('synoptic-tests',()=>{
     // })
 
     it('Synopsis builder download',()=>{
-        const filename
+        let filename
         cy.removeDownloadsFiles()
         cy.removeFixturesXLSXFiles()
         cy.synopticRun({
