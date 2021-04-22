@@ -247,13 +247,12 @@ describe('synoptic-tests',()=>{
                 })
             }else{
                 cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
-                    fileName=stdout.substring(stdout.indexOf(':')+1)
+                    fileName=stdout.substring(stdout.indexOf(':')+2)
                 })
             }
         }).then(()=>{
             filename = path.join(downloadsFolder,fileName)
-            cy.log(fileName+' fileName')
-            cy.log(downloadsFolder+' downloadsFolder')
+            cy.log(fileName+downloadsFolder)
             cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
             const downloadedFilename = path.join(downloadsFolder,fileName)
             cy.task('readExcelFile', downloadedFilename,{timeout:1800000})
