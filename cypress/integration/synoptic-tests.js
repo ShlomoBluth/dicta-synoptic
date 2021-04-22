@@ -247,7 +247,7 @@ describe('synoptic-tests',()=>{
                 })
             }else{
                 cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
-                    fileName=stdout.substring(stdout.firstIndexOf(':')+1)
+                    fileName=stdout.substring(stdout.indexOf(':')+1)
                 })
             }
         }).then(()=>{
