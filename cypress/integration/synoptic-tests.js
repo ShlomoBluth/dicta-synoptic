@@ -224,6 +224,7 @@ describe('synoptic-tests',()=>{
     // })
 
     it('Synopsis builder download',()=>{
+        const filename
         cy.removeDownloadsFiles()
         cy.removeFixturesXLSXFiles()
         cy.synopticRun({
@@ -243,19 +244,20 @@ describe('synoptic-tests',()=>{
             if(Cypress.platform.includes('win')){
                 cy.exec('dir cypress\\downloads /s /b').its('stdout').then(stdout=>{
                     fileName=stdout.substring(stdout.lastIndexOf('\\')+1)
+                    filename = path.join(downloadsFolder,fileName)
                 })
             }else{
                 cy.exec('ls -R cypress/downloads').its('stdout').then(stdout=>{
                     fileName=stdout
+                    filename = path.join(downloadsFolder,fileName)
                 })
             }
         }).then(()=>{
-            const filename = path.join(downloadsFolder,fileName)
             cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
             const downloadedFilename = path.join(downloadsFolder,fileName)
             cy.task('readExcelFile', downloadedFilename,{timeout:1800000})
             // returns an array of lines read from Excel file
-            .should('have.length', 33766)
+            .should('have.length', 33788)
             .then((list) => {
                 // cy.wrap(list[0]).should('have.length',15)
                 // cy.log(list[2][1])
