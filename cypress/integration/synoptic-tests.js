@@ -231,8 +231,8 @@ describe('synoptic-tests',()=>{
             language:'Hebrew',
             files:['חגיגה.txt','מכות.txt']
         })        
-        //cy.waitForRequest()
-        cy.get('[class*="spinner"]',{timeout:60000}).should('not.exist')
+        cy.waitForRequest()
+        //cy.get('[class*="spinner"]',{timeout:60000}).should('not.exist')
         let fileName
         //cy.get('div[class="btn-left"]').click({force:true})
         cy.window().document().then(function (doc) {
@@ -252,12 +252,11 @@ describe('synoptic-tests',()=>{
             }
         }).then(()=>{
             filename = path.join(downloadsFolder,fileName)
-            cy.log(fileName+downloadsFolder)
             cy.readFile(filename,'binary',{timeout:15000}).should('not.be.null')
             const downloadedFilename = path.join(downloadsFolder,fileName)
             cy.task('readExcelFile', downloadedFilename,{timeout:1800000})
             // returns an array of lines read from Excel file
-            .should('have.length', 33788)
+            .should('have.length', 33766)
             .then((list) => {
                 // cy.wrap(list[0]).should('have.length',15)
                 // cy.log(list[2][1])
