@@ -20,7 +20,6 @@ module.exports = (on, config) => {
       // for the spec code to validate it
       console.log('reading Excel file %s', filename)
       console.log('from cwd %s', process.cwd())
-
       return readXlsxFile(filename)
     },
 

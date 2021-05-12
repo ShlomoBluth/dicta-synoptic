@@ -3,6 +3,7 @@
     "baseUrl":"https://synoptic-dev--condescending-darwin-5b410d.netlify.app/",
     "screenshotOnRunFailure": false,
     "defaultCommandTimeout": 30000,
+    "experimentalFetchPolyfill": true,
     "reporter": "cypress-multi-reporters",
     "reporterOptions": {
         "configFile": "reporter-config.json"

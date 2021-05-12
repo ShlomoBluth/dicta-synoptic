@@ -30,5 +30,14 @@ Cypress.on("test:after:run", (test, runnable) => {
 // require('./commands')
 
 Cypress.on('uncaught:exception', (err, runnable) => {
+    debugger
     return false;
 });
+
+
+
+// Cypress.on('fail', (err, runnable) => {
+//     debugger
+//     return false;
+//     //cy.visit('/')
+// });
