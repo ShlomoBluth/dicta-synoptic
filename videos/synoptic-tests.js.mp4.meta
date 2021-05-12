@@ -1,0 +1,146 @@
+;FFMETADATA1
+[CHAPTER]
+TIMEBASE=1/1000
+START=-179591
+END=6002
+title=synoptic-tests Synoptic run in hebrew mode
+[CHAPTER]
+TIMEBASE=1/1000
+START=7549
+END=191689
+title=synoptic-tests Synoptic run in english mode
+[CHAPTER]
+TIMEBASE=1/1000
+START=192125
+END=375908
+title=synoptic-tests Synoptic run of word file and txt file
+[CHAPTER]
+TIMEBASE=1/1000
+START=374702
+END=559760
+title=synoptic-tests All rows in table are correct(2 txt files)
+[CHAPTER]
+TIMEBASE=1/1000
+START=559095
+END=744848
+title=synoptic-tests All rows in table are correct(3 txt files)
+[CHAPTER]
+TIMEBASE=1/1000
+START=746694
+END=930649
+title=synoptic-tests All rows in table are changes only
+[CHAPTER]
+TIMEBASE=1/1000
+START=1104567
+END=1114637
+title=synoptic-tests All rows in table are correct(2 word files)
+[CHAPTER]
+TIMEBASE=1/1000
+START=1121220
+END=1124710
+title=synoptic-tests All rows in table are correct(3 word files)
+[CHAPTER]
+TIMEBASE=1/1000
+START=1122975
+END=1128204
+title=synoptic-tests Errer message in hebrew for file with only english text
+[CHAPTER]
+TIMEBASE=1/1000
+START=1129516
+END=1133455
+title=synoptic-tests Errer message in english for file with only english text
+[CHAPTER]
+TIMEBASE=1/1000
+START=954780
+END=1137399
+title=synoptic-tests File with only english text was deleted from list of uploads
+[CHAPTER]
+TIMEBASE=1/1000
+START=1310808
+END=1320097
+title=synoptic-tests Errer message in hebrew for file with different text
+[CHAPTER]
+TIMEBASE=1/1000
+START=1326989
+END=1329396
+title=synoptic-tests Errer message in english for file with different text
+[CHAPTER]
+TIMEBASE=1/1000
+START=1144912
+END=1331804
+title=synoptic-tests Remove file with test different text and retry
+[CHAPTER]
+TIMEBASE=1/1000
+START=1075503
+END=1518748
+title=synoptic-tests Remove file with different text and retry
+[CHAPTER]
+TIMEBASE=1/1000
+START=1928694
+END=1962448
+title=synoptic-tests All rows in vertical txt file are correct
+[CHAPTER]
+TIMEBASE=1/1000
+START=1975177
+END=1996224
+title=synoptic-tests All Column in horizontal txt file are correct
+[CHAPTER]
+TIMEBASE=1/1000
+START=1990952
+END=2017289
+title=synoptic-tests All rows in vertical word file are correct
+[CHAPTER]
+TIMEBASE=1/1000
+START=2022703
+END=2043643
+title=synoptic-tests All Column in horizontal word file are correct
+[CHAPTER]
+TIMEBASE=1/1000
+START=1781502
+END=2064606
+title=synoptic-tests Number of Columns in Vertical txt file of a Large file
+[CHAPTER]
+TIMEBASE=1/1000
+START=2106655
+END=2347752
+title=synoptic-tests Number of Columns in Vertical word file of a Large file
+[CHAPTER]
+TIMEBASE=1/1000
+START=2563795
+END=2588912
+title=synoptic-tests run snake
+[CHAPTER]
+TIMEBASE=1/1000
+START=2594719
+END=2614073
+title=synoptic-tests 1 columns per row test
+[CHAPTER]
+TIMEBASE=1/1000
+START=2613520
+END=2633472
+title=synoptic-tests 20 columns per row test
+[CHAPTER]
+TIMEBASE=1/1000
+START=2633596
+END=2653465
+title=synoptic-tests 1 blank rows with Synopsis
+[CHAPTER]
+TIMEBASE=1/1000
+START=2647375
+END=2673356
+title=synoptic-tests 5 blank rows with Synopsis
+[CHAPTER]
+TIMEBASE=1/1000
+START=2678762
+END=2699388
+title=synoptic-tests 1 blank rows without Synopsis
+[CHAPTER]
+TIMEBASE=1/1000
+START=2700074
+END=2720046
+title=synoptic-tests 5 blank rows without Synopsis
+[CHAPTER]
+TIMEBASE=1/1000
+START=2718543
+END=2740063
+title=synoptic-tests Snake has the same data as synoptic
