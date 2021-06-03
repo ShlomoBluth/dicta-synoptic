@@ -16,31 +16,40 @@ describe('synoptic-tests',()=>{
     
 
     it('Synoptic run in hebrew mode',()=>{
-        cy.synopticRun({language:'Hebrew',files:['חולין.txt','כתובות.txt']})
+        cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
         cy.waitForRequest()
         cy.get('#tableBody > :nth-child(3)').within(()=>{
-            cy.get(':nth-child(2)').should('contain','מסכת')
-            cy.get(':nth-child(3)').should('contain','מסכת:כתובות')
+            cy.get(':nth-child(2)').should('contain','אמר')
+            cy.get(':nth-child(3)').should('contain','אמר')
         })
     })
 
     it('Synoptic run in english mode',()=>{
-        cy.synopticRun({language:'English',files:['חולין.txt','כתובות.txt']})
+        cy.synopticRun({language:'English',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
         cy.waitForRequest()
         cy.get('#tableBody > :nth-child(3)').within(()=>{
-            cy.get(':nth-child(2)').should('contain','מסכת')
-            cy.get(':nth-child(3)').should('contain','מסכת:כתובות')
+            cy.get(':nth-child(2)').should('contain','אמר')
+            cy.get(':nth-child(3)').should('contain','אמר')
         })
     })
 
     it('Synoptic run of word file and txt file',()=>{
-        cy.synopticRun({language:'English',files:['חולין.docx','כתובות.txt']})
+        cy.synopticRun({language:'English',files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.txt']})
         cy.waitForRequest()
         cy.get('#tableBody > :nth-child(3)').within(()=>{
-            cy.get(':nth-child(2)').should('contain','מסכת')
-            cy.get(':nth-child(3)').should('contain','מסכת:כתובות')
+            cy.get(':nth-child(2)').should('contain','אמר')
+            cy.get(':nth-child(3)').should('contain','אמר')
         })
     })
+
+    // it('server crash',()=>{
+    //     cy.synopticRun({language:'Hebrew',files:['כתובות.txt','חולין.txt']})
+    //     cy.waitForRequest()
+    //     cy.get('#tableBody > :nth-child(3)').within(()=>{
+    //         cy.get(':nth-child(2)').should('contain','מסכת')
+    //         cy.get(':nth-child(3)').should('contain','מסכת')
+    //     })
+    // })
 
 
     // it('Synoptic run with large file in english mode',()=>{
@@ -61,13 +70,13 @@ describe('synoptic-tests',()=>{
     // })
 
     it('All rows in table are correct(2 txt files)',()=>{
-        cy.synopticRun({language:'Hebrew',files:['חולין.txt','כתובות.txt']})
+        cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
         cy.get('table').within(()=>{
             cy.get('[class="first-row"]').within(()=>{
-                cy.get('th[class="second-col"]').first().should('contain','חולין')
-                cy.get('th[class="second-col"]').next().should('contain','כתובות')
+                cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
+                cy.get('th[class="second-col"]').next().should('contain','חוליןDaf2b_2')
             })       
             cy.get('tr').not('[class="first-row"]').then(rows=>{
                 cy.testAllRows(rows)
@@ -94,7 +103,7 @@ describe('synoptic-tests',()=>{
     })
 
     it('All rows in table are changes only',()=>{
-        cy.synopticRun({language:'Hebrew',files:['חולין.txt','כתובות.txt']})
+        cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
         //Changes only
@@ -105,8 +114,8 @@ describe('synoptic-tests',()=>{
         .then(()=>{
             cy.get('table').within(()=>{
                 cy.get('[class="first-row"]').within(()=>{
-                    cy.get('th[class="second-col"]').first().should('contain','חולין')
-                    .next().should('contain','כתובות')
+                    cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
+                    .next().should('contain','חוליןDaf2b_2')
                 })
                 cy.get('tr').not('[class="first-row"]').then(rows=>{
                     cy.testAllRows(rows,true)
@@ -118,13 +127,13 @@ describe('synoptic-tests',()=>{
 
 
     it('All rows in table are correct(2 word files)',()=>{
-        cy.synopticRun({language:'Hebrew',files:['חולין..docx','כתובות..docx']})
+        cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.docx']})
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
         cy.get('table').within(()=>{
             cy.get('[class="first-row"]').within(()=>{
-                cy.get('th[class="second-col"]').first().should('contain','חולין')
-                cy.get('th[class="second-col"]').next().should('contain','כתובות')
+                cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
+                cy.get('th[class="second-col"]').next().should('contain','חוליןDaf2b_2')
             })       
             cy.get('tr').not('[class="first-row"]').then(rows=>{
                 cy.testAllRows(rows)
@@ -135,7 +144,7 @@ describe('synoptic-tests',()=>{
     it('All rows in table are correct(3 word files)',()=>{
         cy.synopticRun({
             language:'Hebrew',
-            files:['חוליןDaf2b_1..docx','חוליןDaf2b_2..docx','חוליןDaf2b_3..docx']
+            files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.docx','חוליןDaf2b_3.docx']
         })
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
@@ -208,7 +217,7 @@ describe('synoptic-tests',()=>{
             files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
         })
         cy.messageForFileWithDifferentText({
-            title:'השרת שלח הודעת שגיאה::',
+            title:'השרת שלח הודעת שגיאה:',
             outlier:'קובץ חריג: חוליןDaf3b_1.txt',
             description:'[הקבצים ברשימה הנזכרת אינם דומים מספיק לקבצים האחרים שנכללים בהשוואת הגרסאות.]',
             options:'אפשר למחוק את הקבצים החריגים או לאפשר להם להיכלל בהשוואת הגרסאות.'
@@ -224,10 +233,11 @@ describe('synoptic-tests',()=>{
         cy.messageForFileWithDifferentText({
             title:'The server sent the following error messages:',
             outlier:'outlier: חוליןDaf3b_1.txt',
-            description:'[This means the above data in the version(s) listed above is not'
-                    +' sufficiently similar to the others to be included in a standard synopsis.]',
-            options:'You can remove outlier(s) and try again, or allow outliers in the'
-            +' synopsis, set AllowOutliers to true in a synopsis.settings.json file'
+            description:'[This means the data in the version(s) listed above is not sufficiently '+
+            'similar to the other(s) to be included in a standard synopsis.]',
+            options:'You can click below, either to remove outlier(s) and try again, or to allow '+
+            'outliers in the synopsis. (To allow them automatically in a future synopsis, '+
+            'set AllowOutliers to true in a synopsis.settings.json file).'
         })
     })
 
@@ -236,7 +246,7 @@ describe('synoptic-tests',()=>{
             language:'Hebrew',
             files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
         })
-        cy.get('div[class*="row failed-with-message"]').should('be.visible')
+        cy.get('div[class*="failed-with-message"]').should('be.visible')
         cy.get('button').contains('מחקו ונסו שוב').click({force:true})
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
@@ -251,12 +261,12 @@ describe('synoptic-tests',()=>{
         })
     })
 
-    it('Remove file with different text and retry',()=>{
+    it('Allow outliers',()=>{
         cy.synopticRun({
             language:'Hebrew',
             files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
         })
-        cy.get('div[class*="row failed-with-message"]').should('be.visible')
+        cy.get('div[class*="failed-with-message"]').should('be.visible')
         cy.get('button').contains('כלול קבצים חריגים').click({force:true})
         cy.waitForRequest()
         cy.get('div[class="btn-left"]').click({force:true})
@@ -365,13 +375,13 @@ describe('synoptic-tests',()=>{
         cy.removeFixturesXLSXFiles()
         cy.runSynopticAndDownloadFile({
             file1:'חגיגה.txt',
-            file2:'מכות.txt',
+            file2:'חגיגה1.txt',
             vertical:true})
         .then(fileName=>{
             cy.readExcelFile(fileName)
             // returns an array of lines read from Excel file
             .then((list) => {
-                cy.wrap(list.length).should('eq',33766)
+                cy.wrap(list.length).should('eq',19145)
                 cy.wrap(list[1].length).should('eq',3)
             })
         })
@@ -399,13 +409,13 @@ describe('synoptic-tests',()=>{
         cy.removeFixturesXLSXFiles()
         cy.runSynopticAndDownloadFile({
             file1:'חגיגה.docx',
-            file2:'מכות.docx',
+            file2:'חגיגה1.docx',
             vertical:true})
         .then(fileName=>{
             cy.readExcelFile(fileName)
             // returns an array of lines read from Excel file
             .then((list) => {
-                cy.wrap(list.length).should('eq',33766)
+                cy.wrap(list.length).should('eq',19145)
                 cy.wrap(list[1].length).should('eq',3)
             })
         })

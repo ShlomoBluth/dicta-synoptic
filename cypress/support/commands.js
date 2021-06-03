@@ -51,7 +51,11 @@ Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',del
         delayMs:1000*delaySeconds,
         statusCode: status
     },)
-    cy.snakeRowsRun(language)
+    cy.goToSnake()
+    cy.setLanguageMode(language)
+    cy.get('input[type="file"]').attachFile('res.xlsx')
+    //cy.downloadFile('button','התחל')
+    cy.get('button').contains(/התחל|Start/g).click()
     if(delaySeconds>0){
       cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
     }else{
@@ -472,7 +476,7 @@ Cypress.Commands.add('runSynopticAndDownloadFile',({file1, file2,vertical})=>{
 })
 
 Cypress.Commands.add('messageForFileWithDifferentText',({title,outlier,description,options})=>{
-  cy.get('div[class*="row failed-with-message"]').should('be.visible').within(()=>{
+  cy.get('div[class*="failed-with-message"]').should('be.visible').within(()=>{
     cy.get('p').contains(title).should('be.visible')
     cy.get('[class*=error-messages]').within(()=>{
         cy.get('li').contains(outlier).should('be.visible')
