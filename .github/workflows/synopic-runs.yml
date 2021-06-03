@@ -31,17 +31,17 @@ jobs:
     - name: Run chrome tests
       run: npx cypress run --browser chrome --spec ./cypress/integration/synoptic-tests.js
 
-    - name: Run firefox tests
-      run: xvfb-run npx cypress run --browser firefox --spec ./cypress/integration/synoptic-tests.js
-      if: ${{ always() }}
+    #- name: Run firefox tests
+      #run: xvfb-run npx cypress run --browser firefox --spec ./cypress/integration/synoptic-tests.js
+      #if: ${{ always() }}
 
-    - name: Run chrome requests tests
-      run: npx cypress run --browser chrome --spec ./cypress/integration/DevelopmentVersionRequestsTests.js
-      if: ${{ always() }}
+    #- name: Run chrome requests tests
+      #run: npx cypress run --browser chrome --spec ./cypress/integration/DevelopmentVersionRequestsTests.js
+      #if: ${{ always() }}
 
-    - name: Run firefox requests tests
-      run: xvfb-run npx cypress run --browser firefox --spec ./cypress/integration/DevelopmentVersionRequestsTests.js
-      if: ${{ always() }}
+    #- name: Run firefox requests tests
+      #run: xvfb-run npx cypress run --browser firefox --spec ./cypress/integration/DevelopmentVersionRequestsTests.js
+      #if: ${{ always() }}
 
 
     - name: Copy test execution videos
