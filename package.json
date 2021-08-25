@@ -3,14 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "cy:run": "npm run runChrome & npm run runFirefox",
-    "cy:runSpec": "npm run runChrome -- --spec %npm_config_spec% & npm run runFirefox -- --spec %npm_config_spec%",
-    "runChrome": "cypress run --browser chrome  --record --key c1c71d00-c206-4fa2-b4db-f76af85e322f",
-    "runFirefox": "cypress run --browser firefox  --record --key c1c71d00-c206-4fa2-b4db-f76af85e322f",
-    "report:merge": "mochawesome-merge cypress/results/json/*.json > index.json",
-    "report:generate": "marge index.json --reportDir public --assetsDir public/assets --reportPageTitle index.html"
-  },
+  "scripts": { },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShlomoBluth/dicta-synoptic.git"
@@ -22,7 +15,7 @@
   },
   "homepage": "https://github.com/ShlomoBluth/dicta-synoptic#readme",
   "devDependencies": {
-    "cypress": "^7.4.0",
+    "cypress": "^8.3.0",
     "cypress-file-upload": "^4.1.1",
     "cypress-multi-reporters": "^1.5.0",
     "mocha": "^8.3.2",

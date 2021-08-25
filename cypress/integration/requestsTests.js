@@ -7,7 +7,8 @@
 describe('RequestsTests',()=>{
     
     beforeEach(() => {
-        cy.visit('https://synoptic.dicta.org.il/')
+        //cy.screenSize({size:size})
+        cy.visitpage({url:'https://synoptic.dicta.org.il/'})
     })
   
 
