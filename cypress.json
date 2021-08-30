@@ -4,7 +4,6 @@
     "screenshotOnRunFailure": false,
     "defaultCommandTimeout": 30000,
     "experimentalFetchPolyfill": true,
-    "failOnStatusCode": false,
     "reporter": "cypress-multi-reporters",
     "reporterOptions": {
         "configFile": "dicta-shared/reporter-config.json"
