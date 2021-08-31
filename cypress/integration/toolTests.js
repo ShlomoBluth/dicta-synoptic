@@ -585,7 +585,7 @@ describe('toolTests',()=>{
                 synopticArr=list
             }).then(()=>{
                 cy.moveFileDownloadsTofixtures(fileName).then(()=>{
-                    cy.setLanguageMode('Hebrew')            
+                    cy.setLanguageMode({language:'Hebrew'})            
                     cy.goToSnake().then(()=>{
                         cy.snakeRowsRun('Hebrew',fileName)
                     })

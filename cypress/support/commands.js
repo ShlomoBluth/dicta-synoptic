@@ -8,7 +8,7 @@ let downloadsFolder = Cypress.config('downloadsFolder')
 
 
 Cypress.Commands.add('synopticRun',({language,files})=>{
-  cy.setLanguageMode(language)
+  cy.setLanguageMode({language:language})
   // cy.get('input[type="file"]').attachFile(files, { subjectType: 'drag-n-drop' })
   // cy.log(files[files.length-1]).pause()
   for(let i=0;i<files.length;i++){
@@ -24,7 +24,7 @@ Cypress.Commands.add('waitForRequest',()=>{
 })
 
 Cypress.Commands.add('snakeRowsRun',(language,file)=>{
-  cy.setLanguageMode(language)
+  cy.setLanguageMode({language:language})
   cy.get('input[type="file"]').attachFile(file)
   cy.downloadFile('button','התחל')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
@@ -52,7 +52,7 @@ Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',del
         statusCode: status
     },)
     cy.goToSnake()
-    cy.setLanguageMode(language)
+    cy.setLanguageMode({language:language})
     cy.get('input[type="file"]').attachFile('res.xlsx')
     //cy.downloadFile('button','התחל')
     cy.get('button').contains(/התחל|Start/g).click()
@@ -66,33 +66,33 @@ Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',del
     }
 })
 
-Cypress.Commands.add('setLanguageMode',(language)=>{
-    cy.get('body').then(elem => {
-      let languageMode
-      if(language=='Hebrew'){
-        languageMode='he'
-      }else if(language=='English'){
-        languageMode=''
-      }
-      let classAttr
-      if(elem.attr("class").substring(elem.attr("class").length-2,
-      elem.attr("class").length)=='he'){
-        classAttr='he'
-      }else{
-        classAttr=''  
-      }
-      if(classAttr!=languageMode)
-      {
-        cy.log(classAttr+' classAttr '+languageMode+' languageMode')
-        cy.get('a').contains(/^עברית$|^English$/g).click();
-      }
-      if(languageMode=='he'){
-        cy.get('a').contains(/^English$/).should('exist')
-      } else{
-        cy.get('a').contains(/^עברית$/).should('exist')
-      }
-    })
-})
+// Cypress.Commands.add('setLanguageMode',(language)=>{
+//     cy.get('body').then(elem => {
+//       let languageMode
+//       if(language=='Hebrew'){
+//         languageMode='he'
+//       }else if(language=='English'){
+//         languageMode=''
+//       }
+//       let classAttr
+//       if(elem.attr("class").substring(elem.attr("class").length-2,
+//       elem.attr("class").length)=='he'){
+//         classAttr='he'
+//       }else{
+//         classAttr=''  
+//       }
+//       if(classAttr!=languageMode)
+//       {
+//         cy.log(classAttr+' classAttr '+languageMode+' languageMode')
+//         cy.get('a').contains(/^עברית$|^English$/g).click();
+//       }
+//       if(languageMode=='he'){
+//         cy.get('a').contains(/^English$/).should('exist')
+//       } else{
+//         cy.get('a').contains(/^עברית$/).should('exist')
+//       }
+//     })
+// })
 
 Cypress.Commands.add('testAllRows',(rows,changesOnly)=>{
 
@@ -346,7 +346,7 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
     })
   }).then(()=>{
     cy.moveFileDownloadsTofixtures(fileName).then(()=>{
-      cy.setLanguageMode('Hebrew')            
+      cy.setLanguageMode({language:'Hebrew'})            
       cy.goToSnake().then(()=>{
         if(numColumnsPerRow!=undefined){
           cy.moveSliederNumColumnsPerRow(numColumnsPerRow)
