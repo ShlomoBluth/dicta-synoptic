@@ -328,7 +328,11 @@ Cypress.Commands.add('includeSynopsisSnakeFile',()=>{
 })
 
 Cypress.Commands.add('moveFileDownloadsTofixtures',(fileName)=>{
-  cy.exec('move-file cypress/downloads/'+fileName+' cypress/fixtures/'+fileName)
+  if(Cypress.platform.includes('win')){
+    cy.exec('move-file cypress/downloads/'+fileName+' cypress/fixtures/'+fileName)
+  }else{
+    cy.exec('mv cypress/downloads/'+fileName+' cypress/fixtures')
+  }
 })
 
 
