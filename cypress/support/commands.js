@@ -288,7 +288,7 @@ Cypress.Commands.add('fileName',()=>{
 Cypress.Commands.add('readExcelFile',(fileName)=>{
   //cy.log(fileName).pause()
   let filename = path.join(downloadsFolder,fileName)
-  cy.readFile(filename,'binary',{timeout:30000}).should('not.be.null')
+  cy.readFile(filename,'binary',{timeout:120000}).should('not.be.null')
   const downloadedFilename = path.join(downloadsFolder,fileName)
   return cy.task('readExcelFile', downloadedFilename,{timeout:1800000})
 })
