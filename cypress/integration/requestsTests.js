@@ -15,43 +15,43 @@ sizes.forEach((size) => {
         })
       
     
-        // it('Error message for response with status code 500 when clicking the run button of synoptic page'+
-        // ' in hebrew mode',()=>{
-        //    cy.synopticRequest({
-        //        language:'Hebrew',
-        //        status:500,
-        //        message:'ארעה תקלה. אנא נסה שוב. במקרה שהבעיה חוזרת נסה שוב מאוחר יותר',
-        //    })
-        // })
+        it('Error message for response with status code 500 when clicking the run button of synoptic page'+
+        ' in hebrew mode',()=>{
+           cy.synopticRequest({
+               language:'Hebrew',
+               status:500,
+               message:'ארעה תקלה. אנא נסה שוב. במקרה שהבעיה חוזרת נסה שוב מאוחר יותר',
+           })
+        })
     
-        // it('Error message for response with status code 500 when clicking the run button of synoptic page'+
-        // ' in english mode',()=>{
-        //     cy.synopticRequest({
-        //         language:'English',
-        //         status:500,
-        //         message:'Server failure. Please try again, if the problem persists please come back '+
-        //         'later and try again.',
-        //     })
-        // })
+        it('Error message for response with status code 500 when clicking the run button of synoptic page'+
+        ' in english mode',()=>{
+            cy.synopticRequest({
+                language:'English',
+                status:500,
+                message:'Server failure. Please try again, if the problem persists please come back '+
+                'later and try again.',
+            })
+        })
     
-        // it('Error message for response with a delay of 15 seconds when clicking the run button'+
-        // ' of synoptic page in hebrew mode',()=>{
-        //     cy.synopticRequest({
-        //         language:'Hebrew',
-        //         message:'ארעה תקלה. אנא נסה שוב. במקרה שהבעיה חוזרת נסה שוב מאוחר יותר',
-        //         delaySeconds: 15
-        //     })
-        // })
+        it('Error message for response with a delay of 15 seconds when clicking the run button'+
+        ' of synoptic page in hebrew mode',()=>{
+            cy.synopticRequest({
+                language:'Hebrew',
+                message:'ארעה תקלה. אנא נסה שוב. במקרה שהבעיה חוזרת נסה שוב מאוחר יותר',
+                delaySeconds: 15
+            })
+        })
     
-        // it('Error message for response with a delay of 15 seconds when clicking the run button'+
-        // ' of synoptic page in english mode',()=>{
-        //     cy.synopticRequest({
-        //         language:'English',
-        //         message:'Server failure. Please try again, if the problem persists please come back '+
-        //         'later and try again.',
-        //         delaySeconds: 15
-        //     })
-        // })
+        it('Error message for response with a delay of 15 seconds when clicking the run button'+
+        ' of synoptic page in english mode',()=>{
+            cy.synopticRequest({
+                language:'English',
+                message:'Server failure. Please try again, if the problem persists please come back '+
+                'later and try again.',
+                delaySeconds: 15
+            })
+        })
     
         it('Error message for /snakeApi/upload response with status code 500 when clicking the run button of synoptic page'+
         ' in hebrew mode',()=>{

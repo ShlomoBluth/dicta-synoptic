@@ -47,25 +47,29 @@ Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySec
 })
 
 Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',delaySeconds=0})=>{
+  cy.removeDownloadsFiles()
+  cy.removeFixturesXLSXFiles()
   let fileName
   cy.synopticRun({
-    language:'Hebrew',
+    language:language,
     files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
   })
   cy.waitForRequest()
-  cy.downloadFile('a','הורד את כל התוצאות').then(()=>{
+  cy.downloadFile('a',/הורד את כל התוצאות|Download full results/).then(()=>{
     cy.fileName().then(name=>{
       fileName=name
     })
   }).then(()=>{
     cy.moveFileDownloadsTofixtures(fileName).then(()=>{
-      cy.setLanguageMode({language:'Hebrew'})
+      cy.setLanguageMode({language:language})
       cy.intercept( url+'**', {
         delayMs:1000*delaySeconds,
         statusCode: status
       },)            
       cy.goToSnake().then(()=>{
-        cy.snakeRowsRun('Hebrew',fileName)
+        cy.get('input[type="file"]').attachFile(fileName)
+        cy.get('button').contains(/התחל|Start/).click({force:true})
+        //cy.snakeRowsRun(language,fileName)
       }).then(()=>{
         if(delaySeconds>0){
           cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
