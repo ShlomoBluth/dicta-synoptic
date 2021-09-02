@@ -331,7 +331,7 @@ Cypress.Commands.add('moveFileDownloadsTofixtures',(fileName)=>{
   if(Cypress.platform.includes('win')){
     cy.exec('move-file cypress/downloads/'+fileName+' cypress/fixtures/'+fileName)
   }else{
-    cy.exec('mv cypress/downloads/'+fileName+' cypress/fixtures'+fileName)
+    cy.exec('mv cypress/downloads/'+fileName+' cypress/fixtures')
   }
 })
 
