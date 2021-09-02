@@ -47,23 +47,54 @@ Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySec
 })
 
 Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',delaySeconds=0})=>{
-    cy.intercept( url+'**', {
+  let fileName
+  cy.synopticRun({
+    language:'Hebrew',
+    files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
+  })
+  cy.waitForRequest()
+  cy.downloadFile('a','הורד את כל התוצאות').then(()=>{
+    cy.fileName().then(name=>{
+      fileName=name
+    })
+  }).then(()=>{
+    cy.moveFileDownloadsTofixtures(fileName).then(()=>{
+      cy.setLanguageMode({language:'Hebrew'})
+      cy.intercept( url+'**', {
         delayMs:1000*delaySeconds,
         statusCode: status
-    },)
-    cy.goToSnake()
-    cy.setLanguageMode({language:language})
-    cy.get('input[type="file"]').attachFile('res.xlsx')
+      },)            
+      cy.goToSnake().then(()=>{
+        cy.snakeRowsRun('Hebrew',fileName)
+      }).then(()=>{
+        if(delaySeconds>0){
+          cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
+        }else{
+          cy.get('[class*="spinner"]').should('not.be.visible')
+        }
+        if(message.length>0){
+          cy.contains(message).should('exist')
+        }
+      })
+    })
+  })        
+    // cy.intercept( url+'**', {
+    //     delayMs:1000*delaySeconds,
+    //     statusCode: status
+    // },)
+    // cy.goToSnake()
+    // cy.setLanguageMode({language:language})
+    // cy.get('input[type="file"]').attachFile('res.xlsx')
     //cy.downloadFile('button','התחל')
-    cy.get('button').contains(/התחל|Start/g).click()
-    if(delaySeconds>0){
-      cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
-    }else{
-      cy.get('[class*="spinner"]').should('not.be.visible')
-    }
-    if(message.length>0){
-      cy.contains(message).should('exist')
-    }
+    //cy.get('button').contains(/התחל|Start/g).click()
+    // if(delaySeconds>0){
+    //   cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
+    // }else{
+    //   cy.get('[class*="spinner"]').should('not.be.visible')
+    // }
+    // if(message.length>0){
+    //   cy.contains(message).should('exist')
+    // }
 })
 
 // Cypress.Commands.add('setLanguageMode',(language)=>{
