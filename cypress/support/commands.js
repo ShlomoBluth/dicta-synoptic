@@ -210,7 +210,7 @@ Cypress.Commands.add('downloadFile',(elem,text)=>{
   cy.document().then(function (doc) {
     doc.addEventListener('mouseover', () => {
       setTimeout(function () {
-        doc.location.reload()
+        doc.location.reload(true)
       }, 15000)
     })
     cy.get(elem).contains(text).click()
@@ -385,6 +385,11 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
     })
   }).then(()=>{
     cy.moveFileDownloadsTofixtures(fileName).then(()=>{
+      cy.get('body').then($body=>{
+        if($body.find('#home').length==0){
+          cy.reload()
+        }
+      })
       cy.setLanguageMode({language:'Hebrew'})            
       cy.goToSnake().then(()=>{
         if(numColumnsPerRow!=undefined){
