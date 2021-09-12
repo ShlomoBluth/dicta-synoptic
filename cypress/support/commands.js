@@ -206,17 +206,28 @@ Cypress.Commands.add('verticalTable',()=>{
 })
 
 Cypress.Commands.add('downloadFile',(elem,text)=>{
-  //cy.get(elem).contains(text).click({force:true})
-  cy.document().then(function (doc) {
-    doc.addEventListener('mouseover', () => {
-      setTimeout(function () {
-        doc.location.reload(true)
-      }, 15000)
+  cy.url().then(url=>{
+    cy.document().then(function (doc) {
+      doc.addEventListener('mouseover', () => {
+        setTimeout(function () {
+          doc.location.replace(url)
+        }, 15000)
+      })
+      cy.get(elem).contains(text).click()
+      //cy.get(elem).contains(text).click({force:true})
     })
-    cy.get(elem).contains(text).click()
-    //cy.get(elem).contains(text).click({force:true})
   })
-  //cy.wait(10000)
+  // //cy.get(elem).contains(text).click({force:true})
+  // cy.document().then(function (doc) {
+  //   doc.addEventListener('mouseover', () => {
+  //     setTimeout(function () {
+  //       doc.location.replace("https://synoptic.dicta.org.il/")
+  //     }, 15000)
+  //   })
+  //   cy.get(elem).contains(text).click()
+  //   //cy.get(elem).contains(text).click({force:true})
+  // })
+  // //cy.wait(10000)
 })
 
 Cypress.Commands.add('testVerticalMatrix',(matrix)=>{
