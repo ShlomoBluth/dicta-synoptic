@@ -207,10 +207,10 @@ Cypress.Commands.add('verticalTable',()=>{
 
 Cypress.Commands.add('downloadFile',(elem,text)=>{
   cy.url().then(url=>{
-    cy.document().then(function (doc) {
-      doc.addEventListener('mouseover', () => {
+    cy.window().then(function (win) {
+      win.addEventListener('mouseover', () => {
         setTimeout(function () {
-          doc.location.replace(url)
+          win.location.replace(url)
         }, 15000)
       })
       cy.get(elem).contains(text).click()
