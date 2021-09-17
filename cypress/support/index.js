@@ -20,7 +20,7 @@ import '../../dicta-shared/index.js'
 // require('./commands')
 
 Cypress.on('uncaught:exception', (err, runnable) => {
-    debugger
+    //debugger
     return false;
 });
 
