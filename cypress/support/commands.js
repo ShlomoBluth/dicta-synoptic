@@ -398,25 +398,26 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
     cy.moveFileDownloadsTofixtures(fileName).then(()=>{
       cy.get('body').then($body=>{
         if($body.find('#home').length==0){
-          cy.reload()
-        }
-      })
-      cy.setLanguageMode({language:'Hebrew'})            
-      cy.goToSnake().then(()=>{
-        if(numColumnsPerRow!=undefined){
-          cy.moveSliederNumColumnsPerRow(numColumnsPerRow)
-        }
-        if(blankRows!=undefined){
-          cy.moveSliderBlankRows(blankRows)
-        }
-        if(includeSynopsisSnakeFile==false){
-          cy.uncheckIncludeSynopsisSnakeFile()
-        }else{
-          cy.checkIncludeSynopsisSnakeFile()
-
+          cy.location().reload()
         }
       }).then(()=>{
+        cy.setLanguageMode({language:'Hebrew'})            
+        cy.goToSnake().then(()=>{
+          if(numColumnsPerRow!=undefined){
+            cy.moveSliederNumColumnsPerRow(numColumnsPerRow)
+          }
+          if(blankRows!=undefined){
+            cy.moveSliderBlankRows(blankRows)
+          }
+          if(includeSynopsisSnakeFile==false){
+            cy.uncheckIncludeSynopsisSnakeFile()
+          }else{
+            cy.checkIncludeSynopsisSnakeFile()
+
+          }
+      }).then(()=>{
         cy.snakeRowsRun('Hebrew',fileName)
+      })
       })
     })
   })                
@@ -425,6 +426,8 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
 Cypress.Commands.add('goToSnake',()=>{
   cy.get('div[class="btn-left"]').click({force:true})
   cy.get('span').contains(/^תצוגת קובץ$|^Snake Rows$/g).click({force:true})
+  cy.get('div').contains(/כלול את הסינופסיס בקובץ|Include the synopsis in the snake file/g)
+  .should('exist')
 })
 
 Cypress.Commands.add('moveSliederNumColumnsPerRow',(num)=>{
