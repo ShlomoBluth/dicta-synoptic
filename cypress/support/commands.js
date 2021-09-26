@@ -15,7 +15,7 @@ Cypress.Commands.add('synopticRun',({language,files})=>{
     cy.get('input[type="file"]').attachFile(files[i], { subjectType: 'drag-n-drop' })
   }
   cy.get('div[class="button-holder-box"]').within(()=>{
-      cy.get('button').click()
+      cy.get('button').click({force: true})
   })
 })
 
@@ -213,7 +213,7 @@ Cypress.Commands.add('downloadFile',(elem,text)=>{
           win.location.replace(url)
         }, 15000)
       })
-      cy.get(elem).contains(text).click()
+      cy.get(elem).contains(text).click({force: true})
       //cy.get(elem).contains(text).click({force:true})
     })
   })
