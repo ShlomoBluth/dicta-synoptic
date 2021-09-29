@@ -26,6 +26,7 @@ Cypress.Commands.add('waitForRequest',()=>{
 Cypress.Commands.add('snakeRowsRun',(language,file)=>{
   cy.setLanguageMode({language:language})
   cy.get('input[type="file"]').attachFile(file)
+  cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
   cy.downloadFile('button','התחל')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
 })
