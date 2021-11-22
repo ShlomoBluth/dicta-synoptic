@@ -417,7 +417,7 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
 
           }
       }).then(()=>{
-        cy.wait(10000)
+        //cy.wait(10000)
         cy.snakeRowsRun('Hebrew',fileName)
       })
       })
