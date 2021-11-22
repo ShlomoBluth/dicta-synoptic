@@ -438,9 +438,10 @@ Cypress.Commands.add('moveSliederNumColumnsPerRow',(num)=>{
     cy.get('.vue-slider-dot')
     .trigger('mousedown')
     .trigger('mousemove',4+-(10-num)*11.6,0,{force: true}).trigger('mouseup')
-    .trigger('change',{force:true})
-    cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
-    cy.get('div[aria-valuetext="'+num+'"]').should('exist')
+    .trigger('change',{force:true}).then(()=>{
+      cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
+      cy.get('div[aria-valuetext="'+num+'"]').should('exist')
+    })
   })
 })
 
