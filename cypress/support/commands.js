@@ -376,7 +376,7 @@ Cypress.Commands.add('includeSynopsisSnakeFile',()=>{
 
 Cypress.Commands.add('moveFileDownloadsTofixtures',(fileName)=>{
   if(Cypress.platform.includes('win')){
-    cy.exec('move-file cypress/downloads/'+fileName+' cypress/fixtures/'+fileName)
+    cy.exec('move cypress\\downloads\\'+fileName+' cypress\\fixtures')
   }else{
     cy.exec('mv cypress/downloads/'+fileName+' cypress/fixtures')
   }
@@ -439,6 +439,7 @@ Cypress.Commands.add('moveSliederNumColumnsPerRow',(num)=>{
     .trigger('mousemove',4+-(10-num)*11.6,0,{force: true}).trigger('mouseup')
     .trigger('change',{force:true})
     cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
+    cy.get('div[aria-valuetext="'+num+'"]').should('exist')
   })
 })
 
