@@ -26,6 +26,7 @@ Cypress.Commands.add('waitForRequest',()=>{
 Cypress.Commands.add('snakeRowsRun',(language,file)=>{
   cy.setLanguageMode({language:language})
   cy.get('input[type="file"]').attachFile(file)
+  cy.contains(file.substring(0,file.length-5)).should('exist')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
   cy.downloadFile('button','התחל')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
@@ -417,7 +418,6 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
 
           }
       }).then(()=>{
-        //cy.wait(10000)
         cy.snakeRowsRun('Hebrew',fileName)
       })
       })
