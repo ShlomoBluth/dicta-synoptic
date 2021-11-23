@@ -508,7 +508,11 @@ urls.forEach((urlValue,urlKey)=>{
                     includeSynopsisSnakeFile:includeSynopsisSnakeFile
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
-                        expect(matrix.length).eq(27)
+                        if(urlKey=='dev'){
+                            cy.wrap(matrix.length).should('eq',31)
+                        }else if(urlKey=='live'){
+                            cy.wrap(matrix.length).should('eq',27)
+                        }
                         cy.testBlankRows({
                             matrix:matrix,
                             blankRows:blankRows,
@@ -531,7 +535,11 @@ urls.forEach((urlValue,urlKey)=>{
                     includeSynopsisSnakeFile:true
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
-                        expect(matrix.length).eq(51)
+                        if(urlKey=='dev'){
+                            cy.wrap(matrix.length).should('eq',59)
+                        }else if(urlKey=='live'){
+                            cy.wrap(matrix.length).should('eq',51)
+                        }
                         cy.testBlankRows({
                             matrix:matrix,
                             blankRows:blankRows,
@@ -554,7 +562,11 @@ urls.forEach((urlValue,urlKey)=>{
                     includeSynopsisSnakeFile:false
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
-                        expect(matrix.length).eq(20)
+                        if(urlKey=='dev'){
+                            cy.wrap(matrix.length).should('eq',23)
+                        }else if(urlKey=='live'){
+                            cy.wrap(matrix.length).should('eq',20)
+                        }
                         cy.testBlankRows({
                             matrix:matrix,
                             blankRows:blankRows,
@@ -577,7 +589,11 @@ urls.forEach((urlValue,urlKey)=>{
                     includeSynopsisSnakeFile:false
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
-                        expect(matrix.length).eq(44)
+                        if(urlKey=='dev'){
+                            cy.wrap(matrix.length).should('eq',51)
+                        }else if(urlKey=='live'){
+                            cy.wrap(matrix.length).should('eq',44)
+                        }
                         cy.testBlankRows({
                             matrix:matrix,
                             blankRows:blankRows,
@@ -635,31 +651,7 @@ urls.forEach((urlValue,urlKey)=>{
                 
                 
                 
-                // cy.fixture('snaked_1e601d0b-c542-4092-846b-469263c33dd8-horiz.xlsx','utf8')
-                // .then(f=>{
-                //     cy.log(f)
-                // })
-        
-                // let blankRows=5,numOfFiles=2
-                // let includeSynopsisSnakeFile=false
-                // cy.removeDownloadsFiles()
-                // cy.removeFixturesXLSXFiles()
-                // cy.runSynopticAndSnake({
-                //     file1:'tehilim1mechon-mamre.txt',
-                //     file2:'tehilim1chabad.txt',
-                //     blankRows:blankRows,
-                //     includeSynopsisSnakeFile:false
-                // }).then(()=>{
-                //     cy.getSnakeMatrix().then((matrix) => {
-                //         expect(matrix.length).eq(44)
-                //         cy.testBlankRows({
-                //             matrix:matrix,
-                //             blankRows:blankRows,
-                //             numOfFiles:numOfFiles,
-                //             includeSynopsis:includeSynopsisSnakeFile
-                //         })
-                //     })
-                // })
+           
             })
 
             
