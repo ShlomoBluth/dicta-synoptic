@@ -16,7 +16,7 @@ jobs:
       options: --user 1001
 
     steps:
-    - uses: actions/upload-artifact@v2
+    - uses: actions/checkout@v1
       with: 
         submodules: true
 
@@ -39,7 +39,7 @@ jobs:
     - name: Run firefox tool tests
       run: |
         touch toolTest.log
-        toolTestsCommand='npx cypress run --browser firefox --spec ./cypress/integration/toolTests.js \
+        toolTestsCommand='npm cypress run --browser firefox --spec ./cypress/integration/toolTests.js \
         --config trashAssetsBeforeRuns=false'
         if $toolTestsCommand >> toolTest.log
         then
