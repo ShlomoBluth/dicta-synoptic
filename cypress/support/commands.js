@@ -213,7 +213,7 @@ Cypress.Commands.add('downloadFile',(elem,text)=>{
       win.addEventListener('mouseover', () => {
         setTimeout(function () {
           win.location.replace(url)
-        }, 15000)
+        }, 30000)
       })
       cy.get(elem).contains(text).click({force: true})
       //cy.get(elem).contains(text).click({force:true})
