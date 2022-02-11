@@ -435,10 +435,20 @@ Cypress.Commands.add('goToSnake',()=>{
 Cypress.Commands.add('moveSliederNumColumnsPerRow',(num)=>{
   cy.get('div').contains(/^עמודות$|^Columns per row$/g).parent().within(()=>{
     cy.get('[class="vue-slider-dot-tooltip-text"]').contains(/^10$/).should('exist')
-    cy.get('.vue-slider-dot')
-    .trigger('mousedown')
-    .trigger('mousemove',4+-(10-num)*11.6,0,{force: true}).trigger('mouseup')
-    .trigger('change',{force:true}).then(()=>{
+    cy.url().then(url=>{
+      if(url==Cypress.env('DEV_URL')){
+        cy.get('.vue-slider-dot')
+        .trigger('mousedown')
+        .trigger('mousemove',4+-(10-num)*14.5,0,{force: true}).trigger('mouseup')
+        .trigger('change',{force:true})
+      }else{
+        cy.get('.vue-slider-dot')
+        .trigger('mousedown')
+        .trigger('mousemove',4+-(10-num)*11.6,0,{force: true}).trigger('mouseup')
+        .trigger('change',{force:true})
+      }
+    })
+    .then(()=>{
       cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
       cy.get('div[aria-valuetext="'+num+'"]').should('exist')
     })
@@ -469,7 +479,7 @@ Cypress.Commands.add('testNumColumnsPerRow',(matrix,columnsPerRow)=>{
 Cypress.Commands.add('moveSliderBlankRows',(num)=>{
   cy.get('div').contains(/^שורות ריקות$|^Blank rows$/g).parent().within(()=>{
     cy.get('[class="vue-slider-dot-tooltip-text"]').contains(/^2$/).should('exist')
-    cy.get('.vue-slider-rail').click(50*(num-1), 0, { force: true })
+    cy.get('.vue-slider-rail').click(65*(num-1), 0, { force: true })
     //.trigger('mousedown',{force: true})
     //.trigger('click',0,0,{force: true}).invoke('change')
     // .trigger('mouseup',{force: true})
