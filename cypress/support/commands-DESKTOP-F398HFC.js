@@ -24,8 +24,8 @@ Cypress.Commands.add("waitForLatestEmail", (inboxId) => {
 });
 
 const password = "test-password";
-let inboxId
-let emailAddress;
+let inboxId="ea06f19c-6126-494e-ad1e-4f8c8e0087f5";
+let emailAddress="ea06f19c-6126-494e-ad1e-4f8c8e0087f5@mailslurp.com";
 let code;
 
 
@@ -42,37 +42,8 @@ Cypress.Commands.add('synopticRun',({language,files})=>{
   const  success_message= ['The files were successfully uploaded', 'הקבצים הועלו בהצלחה']
   const regex = new RegExp(`${success_message.join('|')}`, 'g')
   cy.get('.env-wrapper > .mt-1',{timeout:60000}).contains(regex,{timeout:60000}).should('exist')
-  // cy.createInbox().then(inbox => {
-  //   // verify a new inbox was created
-  //   cy.wrap(inbox).should('not.be.undefined');
-  //   // cy.log('inbox :'+inbox)
-
-  //   // save the inboxId for later checking the emails
-  //   inboxId = inbox.id
-    
-  //   emailAddress = inbox.emailAddress;
-
-  //   cy.get('#input-email-upload').clear().type(emailAddress, { force: true });
-  //   cy.get('#email-form > .btn').click({force: true})
-  //   cy.wrap(inboxId).should('have.length.gte', 1);
-  //   // cy.waitForLatestEmail(inboxId).then(email => {
-  //   //   cy.wrap(email).should('not.be.undefined');
-  //   //   const link = email.body.match(/<a href="(.*?)"/g)[0];
-  //   //   cy.log(link)
-  //   //   cy.get('#input-email-upload').type(email)
-  //   //   cy.get('#email-form > .btn').click({force: true})
-  //   // });
-  // });
-  // cy.createInbox().then(email=>{
-  //   cy.get('#input-email-upload').type(email)
-  //   cy.get('#email-form > .btn').click({force: true})
-  // })
-})
-
-Cypress.Commands.add('enterEmail',()=>{
-  cy.get('#input-email-upload').clear().type(Cypress.env('emailAddress'), { force: true });
+  cy.get('#input-email-upload').type('ocr@ocr.ocr')
   cy.get('#email-form > .btn').click({force: true})
-  cy.wrap(Cypress.env('inboxId')).should('have.length.gte', 1);
 })
   
 
@@ -155,29 +126,10 @@ Cypress.Commands.add('enterEmail',()=>{
   //     cy.get('button').click({force: true})
   // })
 Cypress.Commands.add('downloadEmailResultsFile',({vertical})=>{
-  cy.wait(30000)
-  cy.waitForLatestEmail(Cypress.env('inboxId')).then(email => {
-    // verify we received an email
-    cy.wrap(email).should('not.be.undefined');
-    // Extract the link from the email body
-    var link
-    if(vertical=='var'){
-      link = email.body.match(/<a href="(.*?)"/g)[0];
-      cy.downloadFile(link.substring(9,link.length - 1),'cypress/downloads/',link.substring(77,link.length - 1))
-      .then(()=>{
-        return link.substring(77,link.length - 1)
-      })
-    }else if(vertical=='horiz'){
-      link = email.body.match(/<a href="(.*?)"/g)[1];
-      cy.downloadFile(link.substring(9,link.length - 1),'cypress/downloads/',link.substring(77,link.length - 1))
-      .then(()=>{
-        return link.substring(77,link.length - 1)
-      })
-    }
-    
-    
-    
-  });
+    cy.downloadFile('https://synopsis-2-4.loadbalancer.dicta.org.il/synopsis/ExcelOutput/acdbeb08-0376-4eb7-8cdc-9f2b9c6e228b-vert.xlsx','cypress/downloads',
+    'acdbeb08-0376-4eb7-8cdc-9f2b9c6e228b-vert.xlsx').then(()=>{
+    return 'acdbeb08-0376-4eb7-8cdc-9f2b9c6e228b-vert.xlsx'
+  })
 })
 
 Cypress.Commands.add('waitForRequest',()=>{
@@ -187,44 +139,21 @@ Cypress.Commands.add('waitForRequest',()=>{
 Cypress.Commands.add('snakeRowsRun',(language,file)=>{
   cy.setLanguageMode({language:language})
   cy.get('input[type="file"]').attachFile(file)
-  // cy.contains('..\\'+file).should('exist')
+  cy.contains(file.substring(0,file.length-5)).should('exist')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
   cy.downloadFile('button','התחל')
   cy.get('[class*="spinner"]',{timeout:180000}).should('not.be.visible')
 })
 
-Cypress.Commands.add('uploadRequest',({language,status=200,message='',delaySeconds=0})=>{
-  cy.setLanguageMode({language:language})
-  cy.intercept('**files**', {
+Cypress.Commands.add('synopticRequest',({language,status=200,message='',delaySeconds=0})=>{
+  cy.intercept('POST', '**/api/**', {
       delayMs:1000*delaySeconds,
       statusCode: status
-  },).as("url")
-  cy.get('input[type="file"]').attachFile('tehilim1mechon-mamre.txt')
-  // cy.synopticRun({
-  //   language:language,
-  //   files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
-  // })
-  
-  if(delaySeconds>0){
-    Cypress.config('defaultCommandTimeout', 1000*delaySeconds*10)
-    cy.get('p').contains(message).should('be.visible')
-  }else{
-    cy.get('p').contains(message).should('be.visible')
-  }
-})
-
-Cypress.Commands.add('synopticRequest',({url,language,status=200,message='',delaySeconds=0})=>{
-  cy.log('**/api**').pause()
-  cy.intercept('**'+url+'**', {
-      delayMs:1000*delaySeconds,
-      statusCode: status
-  },).as("url")
+  },)
   cy.synopticRun({
     language:language,
     files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
-  })
-  cy.enterEmail()
-  
+})
   if(delaySeconds>0){
     cy.get('p',{timeout:1000*delaySeconds}).contains(message).should('be.visible')
   }else{
@@ -234,66 +163,40 @@ Cypress.Commands.add('synopticRequest',({url,language,status=200,message='',dela
 
 Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',delaySeconds=0})=>{
   cy.removeDownloadsFiles()
-  // cy.removeFixturesXLSXFiles()
+  cy.removeFixturesXLSXFiles()
   let fileName
-  cy.intercept( url+'**', {
-    delayMs:1000*delaySeconds,
-    statusCode: status
-  },)
-  cy.setLanguageMode({language:language})
-  cy.get('#mode-group > :nth-child(2) > span').click({force:true})
-  cy.get('input[id="fileInput"]').attachFile('64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx')
-  cy.get('.snake-rows > #apply-synopsis').click({force: true}).then(()=>{
-      if(delaySeconds>0){
-        cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
-      }else{
-        cy.get('[class*="spinner"]').should('not.be.visible')
-      }
-      if(message.length>0){
-        cy.contains(message).should('exist')
-      }
-    })   
-  })          
-  // cy.downloadFile('a',/הורד את כל התוצאות|Download full results/).then(()=>{
-  //   cy.fileName().then(name=>{
-  //     fileName=name
-  //   })
-  // }).then(()=>{
-  //   cy.moveFileDownloadsTofixtures(fileName).then(()=>{
-  //     cy.setLanguageMode({language:language})
-  //     cy.intercept( url+'**', {
-  //       delayMs:1000*delaySeconds,
-  //       statusCode: status
-  //     },)
-  //     cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
-  //                   numColumnsPerRow:undefined,blankRows:undefined,
-  //                   includeSynopsisSnakeFile:undefined
-  //               }).then(()=>{
-  //                 if(delaySeconds>0){
-  //                   cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
-  //                 }else{
-  //                   cy.get('[class*="spinner"]').should('not.be.visible')
-  //                 }
-  //                 if(message.length>0){
-  //                   cy.contains(message).should('exist')
-  //                 }
-  //               })            
-      // cy.goToSnake().then(()=>{
-      //   cy.get('input[type="file"]').attachFile(fileName)
-      //   cy.get('button').contains(/התחל|Start/).click({force:true})
-      //   //cy.snakeRowsRun(language,fileName)
-      // }).then(()=>{
-      //   if(delaySeconds>0){
-      //     cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
-      //   }else{
-      //     cy.get('[class*="spinner"]').should('not.be.visible')
-      //   }
-      //   if(message.length>0){
-      //     cy.contains(message).should('exist')
-      //   }
-      // })
-    // })
-  // })        
+  cy.synopticRun({
+    language:language,
+    files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
+  })
+  cy.waitForRequest()
+  cy.downloadFile('a',/הורד את כל התוצאות|Download full results/).then(()=>{
+    cy.fileName().then(name=>{
+      fileName=name
+    })
+  }).then(()=>{
+    cy.moveFileDownloadsTofixtures(fileName).then(()=>{
+      cy.setLanguageMode({language:language})
+      cy.intercept( url+'**', {
+        delayMs:1000*delaySeconds,
+        statusCode: status
+      },)            
+      cy.goToSnake().then(()=>{
+        cy.get('input[type="file"]').attachFile(fileName)
+        cy.get('button').contains(/התחל|Start/).click({force:true})
+        //cy.snakeRowsRun(language,fileName)
+      }).then(()=>{
+        if(delaySeconds>0){
+          cy.get('[class*="spinner"]',{timeout:1000*delaySeconds}).should('not.be.visible')
+        }else{
+          cy.get('[class*="spinner"]').should('not.be.visible')
+        }
+        if(message.length>0){
+          cy.contains(message).should('exist')
+        }
+      })
+    })
+  })        
     // cy.intercept( url+'**', {
     //     delayMs:1000*delaySeconds,
     //     statusCode: status
@@ -311,7 +214,7 @@ Cypress.Commands.add('snakeRowsRequest',({url,language,status=200,message='',del
     // if(message.length>0){
     //   cy.contains(message).should('exist')
     // }
-// })
+})
 
 // Cypress.Commands.add('setLanguageMode',(language)=>{
 //     cy.get('body').then(elem => {
@@ -448,37 +351,30 @@ Cypress.Commands.add('verticalTable',()=>{
   cy.get('div[class="btn-left"]').click({force:true})
 })
 
-Cypress.Commands.add('snakedownloadFile',(file,elem,text)=>{
-  let numColumnsPerRow=1
-  cy.url().then(url=>{
-    cy.window().then(function (win) {
-      cy.wait(1000)
-      win.addEventListener('mouseover', () => {
-        setTimeout(function () {
-          win.location.replace(url)
-        }, 30000)
-      })
-      cy.get('.snake-rows > #apply-synopsis').click({force: true})
-      const file_name='snaked_'+file
-      const file_path = path.join(downloadsFolder,file_name)
-      cy.readFile(file_path,'binary').should("exist")
-      //cy.get(elem).contains(text).click({force:true})
-    })
-  })
-
-  
-  // //cy.get(elem).contains(text).click({force:true})
+// Cypress.Commands.add('downloadFile',(elem,text)=>{
+//   cy.url().then(url=>{
+//     cy.window().then(function (win) {
+//       win.addEventListener('mouseover', () => {
+//         setTimeout(function () {
+//           win.location.replace(url)
+//         }, 30000)
+//       })
+//       cy.get(elem).contains(text).click({force: true})
+//       //cy.get(elem).contains(text).click({force:true})
+//     })
+//   })
+//   // //cy.get(elem).contains(text).click({force:true})
   // cy.document().then(function (doc) {
   //   doc.addEventListener('mouseover', () => {
   //     setTimeout(function () {
   //       doc.location.replace("https://synoptic.dicta.org.il/")
   //     }, 15000)
   //   })
-  //   cy.get(elem).contains(text).click({force:true})
+  //   cy.get(elem).contains(text).click()
   //   //cy.get(elem).contains(text).click({force:true})
   // })
   // //cy.wait(10000)
-})
+// })
 
 Cypress.Commands.add('testVerticalMatrix',(matrix)=>{
   testAllLines(matrix,1)
@@ -630,25 +526,34 @@ Cypress.Commands.add('moveFileDownloadsTofixtures',(fileName)=>{
   }
 })
 
-Cypress.Commands.add('runSnake',({file,numColumnsPerRow,blankRows,includeSynopsisSnakeFile,Language})=>{
-  cy.setLanguageMode({language:Language})
-  cy.get('#mode-group > :nth-child(2) > span').click({force:true})
-  cy.get('input[id="fileInput"]').attachFile(file).then(()=>{
-    if(numColumnsPerRow!=undefined){
-      cy.moveSliederNumColumnsPerRow(numColumnsPerRow)
-    }
-    if(blankRows!=undefined){
-      cy.moveSliderBlankRows(blankRows)
-    }
-    if(includeSynopsisSnakeFile==false){
-      cy.uncheckIncludeSynopsisSnakeFile()
-    }else if(includeSynopsisSnakeFile==true){
-      cy.checkIncludeSynopsisSnakeFile()
-  
-    }
+Cypress.Commands.add('runSnake',()=>{
+  cy.moveFileDownloadsTofixtures('6d4983e2-d56f-4968-955c-fe1f219f82f0-vert.xlsx').then(()=>{
+    cy.get('body').then($body=>{
+      if($body.find('#home').length==0){
+        cy.location().reload()
+      }
+    }).then(()=>{
+      cy.setLanguageMode({language:'Hebrew'})            
+      cy.goToSnake().then(()=>{
+        if(numColumnsPerRow!=undefined){
+          cy.moveSliederNumColumnsPerRow(numColumnsPerRow)
+        }
+        if(blankRows!=undefined){
+          cy.moveSliderBlankRows(blankRows)
+        }
+        if(includeSynopsisSnakeFile==false){
+          cy.uncheckIncludeSynopsisSnakeFile()
+        }else{
+          cy.checkIncludeSynopsisSnakeFile()
+
+        }
+      }).then(()=>{
+      cy.snakeRowsRun('Hebrew',fileName)
+    })
+    })
   })
-  cy.snakedownloadFile(file,'.snake-rows > #apply-synopsis','החל')
 })
+
 
 
 Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
@@ -680,7 +585,7 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
           }
           if(includeSynopsisSnakeFile==false){
             cy.uncheckIncludeSynopsisSnakeFile()
-          }else {
+          }else{
             cy.checkIncludeSynopsisSnakeFile()
 
           }
@@ -693,8 +598,7 @@ Cypress.Commands.add('runSynopticAndSnake',({file1,file2,numColumnsPerRow,
 })
 
 Cypress.Commands.add('goToSnake',()=>{
-  cy.get('div[class="btn-left"]').click({force:true})
-  cy.get('span').contains(/^תצוגת קובץ$|^Snake Rows$/g).click({force:true})
+  cy.get('#mode-group > :nth-child(2) > span').click({force:true})
   cy.get('div').contains(/כלול את הסינופסיס בקובץ|Include the synopsis in the snake file/g)
   .should('exist')
 })
@@ -702,28 +606,22 @@ Cypress.Commands.add('goToSnake',()=>{
 Cypress.Commands.add('moveSliederNumColumnsPerRow',(num)=>{
   cy.get('div').contains(/^עמודות$|^Columns per row$/g).parent().within(()=>{
     cy.get('[class="vue-slider-dot-tooltip-text"]').contains(/^10$/).should('exist')
-    // cy.get(':nth-child(2) > .rail-wrap > .px-2')
     cy.url().then(url=>{
       if(url==Cypress.env('DEV_URL')){
-        cy.get('#sizzle1689898876520 > .rail-wrap > .px-2 > .vue-slider-rail > .vue-slider-process')
+        cy.get('.vue-slider-dot')
         .trigger('mousedown')
-        .trigger('mousemove',4+-(10-num)*20,0,{force: true}).trigger('mouseup')
+        .trigger('mousemove',4+-(10-num)*14.5,0,{force: true}).trigger('mouseup')
         .trigger('change',{force:true})
       }else{
-        cy.get('[class="vue-slider-process"]')
+        cy.get('.vue-slider-dot')
         .trigger('mousedown')
-        .trigger('mousemove',4+-(10-num)*20,0,{force: true})
-        .trigger('mouseup',{force:true}).trigger('change',{force:true});
-
-        // .trigger('mousemove',{ clientX: 1 })
-        // .trigger('mouseup')
-        // .trigger('change',{force:true}).pause()
+        .trigger('mousemove',4+-(10-num)*11.6,0,{force: true}).trigger('mouseup')
+        .trigger('change',{force:true})
       }
     })
     .then(()=>{
       cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
       cy.get('div[aria-valuetext="'+num+'"]').should('exist')
-      
     })
   })
 })
@@ -750,8 +648,9 @@ Cypress.Commands.add('testNumColumnsPerRow',(matrix,columnsPerRow)=>{
 })
 
 Cypress.Commands.add('moveSliderBlankRows',(num)=>{
-  cy.get(':nth-child(3) > .rail-wrap > .px-2 > .vue-slider-rail').contains(/^2$/).should('exist')
-  cy.get(':nth-child(3) > .rail-wrap > .px-2 > .vue-slider-rail').click(65*(num-1), 0, { force: true })
+  cy.get('div').contains(/^שורות ריקות$|^Blank rows$/g).parent().within(()=>{
+    cy.get('[class="vue-slider-dot-tooltip-text"]').contains(/^2$/).should('exist')
+    cy.get('.vue-slider-rail').click(65*(num-1), 0, { force: true })
     //.trigger('mousedown',{force: true})
     //.trigger('click',0,0,{force: true}).invoke('change')
     // .trigger('mouseup',{force: true})
@@ -759,7 +658,8 @@ Cypress.Commands.add('moveSliderBlankRows',(num)=>{
     //.end()
     
     
-  cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
+    cy.get('[class="vue-slider-dot-tooltip-text"]').contains(new RegExp("^" + num + "$")).should('exist')
+  })
 })
 
 Cypress.Commands.add('testBlankRows',({matrix,blankRows,numOfFiles,includeSynopsis})=>{
@@ -805,6 +705,7 @@ Cypress.Commands.add('runSynopticAndDownloadFile',({file1, file2,vertical})=>{
       cy.verticalTable()
     }
   }).then(()=>{
+    cy.log('true').pause()
     cy.downloadFile('a','הורד את כל התוצאות').then(()=>{
       cy.fileName().then(name=>{
         fileName=name

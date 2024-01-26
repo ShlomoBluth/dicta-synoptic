@@ -1,4 +1,5 @@
 ///<reference types="cypress"/>
+/// <reference types="cypress-downloadfile"/>
 
 
 const path = require('path')
@@ -7,11 +8,11 @@ let downloadsFolder = Cypress.config('downloadsFolder')
 
 const urls = new Map();
 urls.set('live',Cypress.env('LIVE_URL'))
-//urls.set('dev',Cypress.env('DEV_URL')) 
+urls.set('dev',Cypress.env('DEV_URL')) 
 
 const sizes= new Map();
 sizes.set('desktop',[1000, 660])
-//sizes.set('mobile','iphone-x')
+// sizes.set('mobile','iphone-x')
 
 
 urls.forEach((urlValue,urlKey)=>{
@@ -21,78 +22,136 @@ urls.forEach((urlValue,urlKey)=>{
     
         describe('toolTests '+urlKey+' '+sizeKey,()=>{
     
-            beforeEach(() => {
+            var inboxId
+            let emailAddress
+            // beforeEach(() => {
+                
+            // })
+
+            before(()=>{
+                cy.createInbox().then(inbox => {
+                    cy.removeDownloadsFiles()
+                    // verify a new inbox was created
+                    cy.wrap(inbox).should('not.be.undefined');
+                
+                    // save the inboxId for later checking the emails
+                    inboxId = inbox.id
+                    Cypress.env('inboxId', inboxId)
+
+                    
+                    emailAddress = inbox.emailAddress;
+                    Cypress.env('emailAddress', emailAddress)
+                })
+            })
+
+            beforeEach(()=>{
                 cy.screenSize({size:sizeValue})
                 cy.visitpage({url:urlValue})
             })
 
             it('Synoptic run in hebrew mode',()=>{
+                cy.removeDownloadsFiles()
                 cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
-                cy.waitForRequest()
-                cy.get('#tableBody > :nth-child(3)').within(()=>{
-                    cy.get(':nth-child(2)').should('contain','אמר')
-                    cy.get(':nth-child(3)').should('contain','אמר')
+                cy.enterEmail()
+                cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
+                cy.enterEmail()
+                cy.downloadEmailResultsFile({vertical:'var'}).then(filename => {
+                    Cypress.env('var', filename)
+                    cy.readExcelFile(filename)
+                    .then(list=>{
+                        cy.wrap(list[0][0]).should('contain','חוליןDaf2b_1')
+                        cy.wrap(list[0][1]).should('contain','חוליןDaf2b_2')
+                    })
                 })
+                cy.downloadEmailResultsFile({vertical:'horiz'}).then(horizfile => {
+                    Cypress.env('horiz', horizfile)
+                })
+
             })
         
             it('Synoptic run in english mode',()=>{
-                cy.synopticRun({language:'English',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
-                cy.waitForRequest()
-                cy.get('#tableBody > :nth-child(3)').within(()=>{
-                    cy.get(':nth-child(2)').should('contain','אמר')
-                    cy.get(':nth-child(3)').should('contain','אמר')
+                cy.synopticRun({language:'English',files:['חוליןDaf2b_2.docx','חוליןDaf2b_3.docx']})
+                cy.enterEmail()
+                cy.downloadEmailResultsFile({vertical:'var'}).then(filename => {
+                    cy.readExcelFile(filename)
+                    .then(list=>{
+                        cy.wrap(list[0][0]).should('contain','חוליןDaf2b_2')
+                        cy.wrap(list[0][1]).should('contain','חוליןDaf2b_3')
+                    })
                 })
             })
         
             it('Synoptic run of word file and txt file',()=>{
-                cy.synopticRun({language:'English',files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.txt']})
-                cy.waitForRequest()
-                cy.get('#tableBody > :nth-child(3)').within(()=>{
-                    cy.get(':nth-child(2)').should('contain','אמר')
-                    cy.get(':nth-child(3)').should('contain','אמר')
+                cy.synopticRun({language:'English',files:['חוליןDaf2b_1.docx','חוליןDaf2b_3.txt']})
+                cy.enterEmail()
+                cy.downloadEmailResultsFile({vertical:'var'}).then(filename => {
+                    cy.readExcelFile(filename)
+                    .then(list=>{
+                        cy.wrap(list[0][0]).should('contain','חוליןDaf2b_')
+                        cy.wrap(list[0][1]).should('contain','חוליןDaf2b_3')
+                    })
                 })
             })
         
-            // it('server crash',()=>{
-            //     cy.synopticRun({language:'Hebrew',files:['כתובות.txt','חולין.txt']})
-            //     cy.waitForRequest()
-            //     cy.get('#tableBody > :nth-child(3)').within(()=>{
-            //         cy.get(':nth-child(2)').should('contain','מסכת')
-            //         cy.get(':nth-child(3)').should('contain','מסכת')
-            //     })
-            // })
+            it('Not sufficiently similar message in english',()=>{
+                cy.synopticRun({language:'English',files:['כתובות.txt','חולין.txt']})
+                cy.enterEmail()
+                cy.get('.error-message').invoke('text').then((text) => {
+                    cy.wrap(text).should('contain','Error received')
+                    cy.wrap(text).should('contain','כתובות.txt')
+                    cy.wrap(text).should('contain','[This means the data in the version') 
+                    cy.wrap(text).should('contain','listed above is not sufficiently similar to the other')
+                    cy.wrap(text).should('contain','to perform a synopsis.]')
+                  })
+            })
+
+            it('Not sufficiently similar message in hebrew',()=>{
+                cy.synopticRun({language:'Hebrew',files:['כתובות.txt','חולין.txt']})
+                cy.enterEmail()
+                cy.get('.error-message').invoke('text').then((text) => {
+                    cy.wrap(text).should('contain','התקבלה הודעת שגיאה')
+                    cy.wrap(text).should('contain','כתובות.txt')
+                    cy.wrap(text).should('contain','[הקבצים ברשימה הנזכרת אינם דומים מספיק לקבצים האחרים') 
+                    cy.wrap(text).should('contain','שנכללים בהשוואת הגרסאות.]')
+                    cy.wrap(text).should('contain','אפשר למחוק את הקבצים החריגים או לאפשר להם להיכלל')
+                    cy.wrap(text).should('contain','בהשוואת הגרסאות.')
+                  })
+            })
         
         
-            // it('Synoptic run with large file in english mode',()=>{
-            //     cy.synopticRun({language:'English',files:['כתובות.txt','כתובות1.txt']})
-            //     cy.serverFailureMessage('Server failure. Please try again, if the problem persists please'+
-            //     ' come back later and try again.')
-            // })
+            it('Synoptic run with large file in english mode',()=>{
+                cy.synopticRun({language:'English',files:['כתובות.txt','כתובות1.txt']})
+                cy.enterEmail()
+                cy.get('.px-5').should('contain','The synopsis results will be sent via email')
+            })
         
-            // it('Synoptic run with large file in english mode',()=>{
-            //     cy.synopticRun({language:'Hebrew',files:['כתובות.txt','כתובות1.txt']})
-            //     cy.serverFailureMessage('ארעה תקלה. אנא נסה שוב. במקרה שהבעיה חוזרת נסה שוב מאוחר יותר')
-            // })
+            it('Synoptic run with large file in english mode',()=>{
+                cy.synopticRun({language:'Hebrew',files:['כתובות.txt','כתובות1.txt']})
+                cy.enterEmail()
+                cy.get('.px-5').should('contain','קובץ התוצאות של השוואת הגרסאות ישלח לדוא״ל')
+            })
         
-            // it('Go Back button befor results page',()=>{
-            //     cy.synopticRun({language:'English',files:['חולין.txt','כתובות.txt']})
-            //     cy.get('button').contains(/חזרה|Go Back/).click({force:true})
-            //     cy.get('[class*="spinner"]').should('not.be.visible')
-            // })
+            it('Go Back button befor results page',()=>{
+                cy.synopticRun({language:'English',files:['חולין.txt','כתובות.txt']})
+                cy.enterEmail()
+                cy.get('button').contains('Upload new files').click({force:true})
+                cy.get('.file-upload > .col-sm-9').should('be.visible')
+            })
+
+            it('Go Back button befor results page',()=>{
+                cy.synopticRun({language:'Hebrew',files:['חולין.txt','כתובות.txt']})
+                cy.enterEmail()
+                cy.get('button').contains('חזרה למסך הראשי').click({force:true})
+                cy.get('.file-upload > .col-sm-9').should('be.visible')
+            })
         
             it('All rows in table are correct(2 txt files)',()=>{
-                cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        cy.get('th[class="second-col"]').next().should('contain','חוליןDaf2b_2')
-                    })       
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
+                cy.readExcelFile(Cypress.env('var'))
+                    .then(list=>{
+                        cy.wrap(list[0][0]).should('contain','חוליןDaf2b_1')
+                        cy.wrap(list[0][1]).should('contain','חוליןDaf2b_2')
+                        cy.testAllRows(list.slice(1))
                     })
-                })
             })
         
             it('All rows in table are correct(3 txt files)',()=>{
@@ -100,75 +159,22 @@ urls.forEach((urlValue,urlKey)=>{
                     language:'Hebrew',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf2b_3.txt']
                 })
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        .next().should('contain','חוליןDaf2b_2').next().should('contain','חוליןDaf2b_3')
-                    })
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows,false)
-                    })
-                })
-            })
-        
-            it('All rows in table are changes only',()=>{
-                cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt']})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                //Changes only
-                cy.get('a[id="gener-options-sropdown"]').click({force:true}).then(()=>{
-                    cy.get('ul[class="dropdown-menu drop show"]>li').eq(1).click()
-                })
-                cy.get('a[id="gener-options-sropdown"] > span').contains('רק שינויים').should('exist')
-                .then(()=>{
-                    cy.get('table').within(()=>{
-                        cy.get('[class="first-row"]').within(()=>{
-                            cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                            .next().should('contain','חוליןDaf2b_2')
-                        })
-                        cy.get('tr').not('[class="first-row"]').then(rows=>{
-                            cy.testAllRows(rows,true)
-                        })
-                    })
-                })
-                
-            })
-        
-        
-            it('All rows in table are correct(2 word files)',()=>{
-                cy.synopticRun({language:'Hebrew',files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.docx']})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        cy.get('th[class="second-col"]').next().should('contain','חוליןDaf2b_2')
-                    })       
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
+                cy.enterEmail()
+                cy.downloadEmailResultsFile({vertical:'var'}).then(filename => {
+                    cy.readExcelFile(filename)
+                    .then(list=>{
+                        cy.wrap(list[0][0]).should('contain','חוליןDaf2b_1')
+                        cy.wrap(list[0][1]).should('contain','חוליןDaf2b_2')
+                        cy.wrap(list[0][2]).should('contain','חוליןDaf2b_3')
+                        cy.testAllRows(list.slice(1))
                     })
                 })
             })
         
-            it('All rows in table are correct(3 word files)',()=>{
-                cy.synopticRun({
-                    language:'Hebrew',
-                    files:['חוליןDaf2b_1.docx','חוליןDaf2b_2.docx','חוליןDaf2b_3.docx']
-                })
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        .next().should('contain','חוליןDaf2b_2').next().should('contain','חוליןDaf2b_3')
-                    })
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
-                    })
-                })
-            })
+            
+        
+        
+           
         
         
         
@@ -177,11 +183,9 @@ urls.forEach((urlValue,urlKey)=>{
                     language:'Hebrew',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','englishText.txt']
                 })
-                cy.messageForFileWithOnlyEnglishText({
-                    title:'השרת דחה את הקובץ הבא:',
-                    file:'englishText.txt',
-                    removeMessage:'מחקנו את הקובץ מרשימת ההעלאות'
-                })
+                cy.enterEmail()
+                cy.get('.pt-4').should('contain','התקבלה הודעת שגיאה')
+                cy.get('.px-5').should('contain','"englishText.txt"')
             })
         
         
@@ -190,11 +194,9 @@ urls.forEach((urlValue,urlKey)=>{
                     language:'English',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','englishText.txt']
                 })
-                cy.messageForFileWithOnlyEnglishText({
-                    title:'The server rejected the following file',
-                    file:'englishText.txt',
-                    removeMessage:'We have removed the above file from your upload list'
-                })
+                cy.enterEmail()
+                cy.get('.pt-4').should('contain','Error receive')
+                cy.get('.px-5').should('contain','"englishText.txt"')
             })
         
             
@@ -203,73 +205,28 @@ urls.forEach((urlValue,urlKey)=>{
                     language:'Hebrew',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','englishText.txt']
                 })
-                cy.get('div[class*="uploads-failed-box"]').should('be.visible')
-                cy.get('button').contains('חזרה').click({force:true})
-                cy.get('[class="file-name-wrap"]').contains('חוליןDaf2b_1').should('exist')
-                cy.get('[class="file-name-wrap"]').contains('חוליןDaf2b_2').should('exist')
-                cy.get('[class="file-name-wrap"]').contains('englishText').should('not.exist')
-                cy.get('button').contains('התחל').click({force:true})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        .next().should('contain','חוליןDaf2b_2')
-                    })       
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
-                    })
-                })
-            })
-        
-            it('Errer message in hebrew for file with different text',()=>{
-                cy.synopticRun({
-                    language:'Hebrew',
-                    files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
-                })
-                cy.messageForFileWithDifferentText({
-                    title:'השרת שלח הודעת שגיאה:',
-                    outlier:'קובץ חריג: חוליןDaf3b_1.txt',
-                    description:'[הקבצים ברשימה הנזכרת אינם דומים מספיק לקבצים האחרים שנכללים בהשוואת הגרסאות.]',
-                    options:'אפשר למחוק את הקבצים החריגים או לאפשר להם להיכלל בהשוואת הגרסאות.'
-                })
+                cy.enterEmail()
+                cy.get('button').contains('חזרה למסך הראשי').click({force:true})
+                cy.get('.uppy-Dashboard-Item-actionWrapper').children().next().eq(2).click({force:true})
+                cy.get('.file-upload > .col-sm-3 > .settings > #apply-synopsis').click({force: true})
+                const  success_message= ['The files were successfully uploaded', 'הקבצים הועלו בהצלחה']
+                const regex = new RegExp(`${success_message.join('|')}`, 'g')
+                cy.get('.env-wrapper > .mt-1',{timeout:60000}).contains(regex,{timeout:60000}).should('exist')
+                cy.get('#input-email-upload').type('lomibluth@gmail.com')
+                cy.get('#email-form > .btn').click({force: true})
+                cy.get('.px-5').should('contain','קובץ התוצאות של השוואת הגרסאות ישלח לדוא״ל')
             })
         
         
-            it('Errer message in english for file with different text',()=>{
-                cy.synopticRun({
-                    language:'English',
-                    files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
-                })
-                cy.messageForFileWithDifferentText({
-                    title:'The server sent the following error messages:',
-                    outlier:'outlier: חוליןDaf3b_1.txt',
-                    description:'[This means the data in the version(s) listed above is not sufficiently '+
-                    'similar to the other(s) to be included in a standard synopsis.]',
-                    options:'You can click below, either to remove outlier(s) and try again, or to allow '+
-                    'outliers in the synopsis. (To allow them automatically in a future synopsis, '+
-                    'set AllowOutliers to true in a synopsis.settings.json file).'
-                })
-            })
         
             it('Remove file with test different text and retry',()=>{
                 cy.synopticRun({
                     language:'Hebrew',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
                 })
-                cy.get('div[class*="failed-with-message"]').should('be.visible')
-                cy.get('button').contains('מחקו ונסו שוב').click({force:true})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        .next().should('contain','חוליןDaf2b_2')
-                    })       
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
-                    })
-                })
+                cy.enterEmail()
+                cy.get('.outlier-btns > .mx-2').click({force:true})
+                cy.get('.px-5').should('contain','קובץ התוצאות של השוואת הגרסאות ישלח לדוא״ל')
             })
         
             it('Allow outliers',()=>{
@@ -277,188 +234,67 @@ urls.forEach((urlValue,urlKey)=>{
                     language:'Hebrew',
                     files:['חוליןDaf2b_1.txt','חוליןDaf2b_2.txt','חוליןDaf3b_1.txt']
                 })
-                cy.get('div[class*="failed-with-message"]').should('be.visible')
-                cy.get('button').contains('כלול קבצים חריגים').click({force:true})
-                cy.waitForRequest()
-                cy.get('div[class="btn-left"]').click({force:true})
-                cy.get('table').within(()=>{
-                    cy.get('[class="first-row"]').within(()=>{
-                        cy.get('th[class="second-col"]').first().should('contain','חוליןDaf2b_1')
-                        .next().should('contain','חוליןDaf2b_2').next().should('contain','חוליןDaf3b_1')
-                    })       
-                    cy.get('tr').not('[class="first-row"]').then(rows=>{
-                        cy.testAllRows(rows)
-                    })
-                })
+                cy.enterEmail()
+                cy.get('.outlier-btns > .btn-primary').click({force:true})
+                cy.get('.px-5').should('contain','קובץ התוצאות של השוואת הגרסאות ישלח לדוא״ל')
             })
         
         
-            it('All rows in vertical txt file are correct',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    vertical:true
-                })
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
-                    // returns an array of lines read from Excel file
-                    .then((list) => {
-                        if(urlKey=='dev'){
-                            cy.wrap(list.length).should('eq',77)
-                        }else if(urlKey=='live'){
-                            cy.wrap(list.length).should('eq',66)
-                        }
-                        cy.testVerticalMatrix(list)
-                    })
-                })
-            })
         
-            it('All Column in horizontal txt file are correct',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt'
-                })
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
+            it('All Column in horizontal txt file are correct',()=>{          
+                    cy.readExcelFile(Cypress.env('horiz'))
                     // returns an array of lines read from Excel file
                     .then((list) => {
                         if(urlKey=='dev'){
-                            cy.wrap(list[1].length).should('eq',77)
+                            cy.wrap(list[1].length).should('eq',239)
                         }else if(urlKey=='live'){
-                            cy.wrap(list[1].length).should('eq',66)
+                            cy.wrap(list[1].length).should('eq',239)
                         }
                         cy.testHorizontalMatrix(list)
                     })
-                })
             })
         
             it('All rows in vertical word file are correct',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'tehilim1mechon-mamre.docx',
-                    file2:'tehilim1chabad.docx',
-                    vertical:true
-                })
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
+                cy.readExcelFile(Cypress.env('var'))
                     // returns an array of lines read from Excel file
                     .then((list) => {
                         if(urlKey=='dev'){
-                            cy.wrap(list.length).should('eq',77)
+                            cy.wrap(list.length).should('eq',239)
                         }else if(urlKey=='live'){
-                            cy.wrap(list.length).should('eq',66)
+                            cy.wrap(list.length).should('eq',239)
                         }
-                        cy.testVerticalMatrix(list)
-                    })
+                    cy.testVerticalMatrix(list)
                 })
-            })
+            })      
+           
+               
+            // // it('Number of lines in horizontal txt file of a Large file',()=>{
+            // //     cy.readExcelFile('6d4983e2-d56f-4968-955c-fe1f219f82f0-horiz.xlsx')
+            // //         // returns an array of lines read from Excel file
+            // //         .then((list) => {
+            // //             cy.wrap(list.length).should('eq',3)
+            // //             cy.wrap(list[1].length).should('eq',15759)
+            // //         })
+            // // })
         
-            it('All Column in horizontal word file are correct',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'tehilim1mechon-mamre.docx',
-                    file2:'tehilim1chabad.docx'
-                })
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
-                    // returns an array of lines read from Excel file
-                    .then((list) => {
-                        if(urlKey=='dev'){
-                            cy.wrap(list[1].length).should('eq',77)
-                        }else if(urlKey=='live'){
-                            cy.wrap(list[1].length).should('eq',66)
-                        }
-                        cy.testHorizontalMatrix(list)
-                    })
-                })
-            })
+            // // it('Number of Columns in Vertical txt file of a Large file',()=>{
+            // //     cy.readExcelFile('6d4983e2-d56f-4968-955c-fe1f219f82f0-vert.xlsx')
+            // //         // returns an array of lines read from Excel file
+            // //         .then((list) => {
+            // //             cy.wrap(list.length).should('eq',15759)
+            // //             cy.wrap(list[1].length).should('eq',3)
+            // //         })
+            // // })
         
+            
         
-            // it('Number of lines in horizontal txt file of a Large file',()=>{
-            //     cy.removeDownloadsFiles()
-            //     cy.removeFixturesXLSXFiles()
-            //     cy.runSynopticAndDownloadFile({
-            //         file1:'חגיגה.txt',
-            //         file2:'מכות.txt'
-            //     })
-            //     .then(fileName=>{
-            //         cy.readExcelFile(fileName)
-            //         // returns an array of lines read from Excel file
-            //         .then((list) => {
-            //             cy.wrap(list.length).should('eq',3)
-            //             cy.wrap(list[1].length).should('eq',33766)
-            //         })
-            //     })
-            // })
-        
-            it('Number of Columns in Vertical txt file of a Large file',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'חגיגה.txt',
-                    file2:'חגיגה1.txt',
-                    vertical:true})
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
-                    // returns an array of lines read from Excel file
-                    .then((list) => {
-                        cy.wrap(list.length).should('eq',19145)
-                        cy.wrap(list[1].length).should('eq',3)
-                    })
-                })
-            })
-        
-            // it('Number of lines in horizontal word file of a Large file',()=>{
-            //     cy.removeDownloadsFiles()
-            //     cy.removeFixturesXLSXFiles()
-            //     cy.runSynopticAndDownloadFile({
-            //         file1:'חגיגה.docx',
-            //         file2:'מכות.docx'
-            //     })
-            //     .then(fileName=>{
-            //         cy.readExcelFile(fileName)
-            //         // returns an array of lines read from Excel file
-            //         .then((list) => {
-            //             cy.wrap(list.length).should('eq',3)
-            //             cy.wrap(list[1].length).should('eq',33766)
-            //         })
-            //     })
-            // })
-        
-            it('Number of Columns in Vertical word file of a Large file',()=>{
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndDownloadFile({
-                    file1:'חגיגה.docx',
-                    file2:'חגיגה1.docx',
-                    vertical:true})
-                .then(fileName=>{
-                    cy.readExcelFile(fileName)
-                    // returns an array of lines read from Excel file
-                    .then((list) => {
-                        cy.wrap(list.length).should('eq',19145)
-                        cy.wrap(list[1].length).should('eq',3)
-                    })
-                })
-            })
         
             
         
             it('run snake',()=>{
-                let columnsPerRow=1
-                cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    numColumnsPerRow:columnsPerRow
-                }).then(()=>{
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:undefined,includeSynopsisSnakeFile:true,
+                    Language:'Hebrew'}).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         cy.wrap(matrix).should('not.be.null')
                     })
@@ -467,13 +303,12 @@ urls.forEach((urlValue,urlKey)=>{
         
         
             it('1 columns per row test',()=>{
-                let columnsPerRow=1
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    numColumnsPerRow:columnsPerRow
+                let columnsPerRow=1
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:undefined,
+                    numColumnsPerRow:columnsPerRow,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         cy.testNumColumnsPerRow(matrix,columnsPerRow)
@@ -484,11 +319,10 @@ urls.forEach((urlValue,urlKey)=>{
             it('20 columns per row test',()=>{
                 let columnsPerRow=20
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    numColumnsPerRow:columnsPerRow
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:undefined,
+                    numColumnsPerRow:columnsPerRow,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         cy.testNumColumnsPerRow(matrix,columnsPerRow)
@@ -500,18 +334,17 @@ urls.forEach((urlValue,urlKey)=>{
                 let blankRows=1,numOfFiles=2
                 let includeSynopsisSnakeFile=true
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    blankRows:blankRows,
-                    includeSynopsisSnakeFile:includeSynopsisSnakeFile
+                // cy.removeFixturesXLSXFiles()
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:blankRows,
+                    includeSynopsisSnakeFile:undefined,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         if(urlKey=='dev'){
-                            cy.wrap(matrix.length).should('eq',31)
+                            cy.wrap(matrix.length).should('eq',95)
                         }else if(urlKey=='live'){
-                            cy.wrap(matrix.length).should('eq',27)
+                            cy.wrap(matrix.length).should('eq',95)
                         }
                         cy.testBlankRows({
                             matrix:matrix,
@@ -527,18 +360,16 @@ urls.forEach((urlValue,urlKey)=>{
                 let blankRows=5,numOfFiles=2
                 let includeSynopsisSnakeFile=true
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    blankRows:blankRows,
-                    includeSynopsisSnakeFile:true
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:blankRows,
+                    includeSynopsisSnakeFile:undefined,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         if(urlKey=='dev'){
-                            cy.wrap(matrix.length).should('eq',59)
+                            cy.wrap(matrix.length).should('eq',187)
                         }else if(urlKey=='live'){
-                            cy.wrap(matrix.length).should('eq',51)
+                            cy.wrap(matrix.length).should('eq',187)
                         }
                         cy.testBlankRows({
                             matrix:matrix,
@@ -554,18 +385,16 @@ urls.forEach((urlValue,urlKey)=>{
                 let blankRows=1,numOfFiles=2
                 let includeSynopsisSnakeFile=false
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    blankRows:blankRows,
-                    includeSynopsisSnakeFile:false
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:blankRows,
+                    includeSynopsisSnakeFile:includeSynopsisSnakeFile,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         if(urlKey=='dev'){
-                            cy.wrap(matrix.length).should('eq',23)
+                            cy.wrap(matrix.length).should('eq',71)
                         }else if(urlKey=='live'){
-                            cy.wrap(matrix.length).should('eq',20)
+                            cy.wrap(matrix.length).should('eq',71)
                         }
                         cy.testBlankRows({
                             matrix:matrix,
@@ -581,18 +410,16 @@ urls.forEach((urlValue,urlKey)=>{
                 let blankRows=5,numOfFiles=2
                 let includeSynopsisSnakeFile=false
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
-                cy.runSynopticAndSnake({
-                    file1:'tehilim1mechon-mamre.txt',
-                    file2:'tehilim1chabad.txt',
-                    blankRows:blankRows,
-                    includeSynopsisSnakeFile:false
+                cy.runSnake({file:'64c7cb70-7ec9-4ac9-ba3a-d784e92db10b-horiz.xlsx',
+                    numColumnsPerRow:undefined,blankRows:blankRows,
+                    includeSynopsisSnakeFile:includeSynopsisSnakeFile,
+                    Language:'Hebrew'
                 }).then(()=>{
                     cy.getSnakeMatrix().then((matrix) => {
                         if(urlKey=='dev'){
-                            cy.wrap(matrix.length).should('eq',51)
+                            cy.wrap(matrix.length).should('eq',163)
                         }else if(urlKey=='live'){
-                            cy.wrap(matrix.length).should('eq',44)
+                            cy.wrap(matrix.length).should('eq',163)
                         }
                         cy.testBlankRows({
                             matrix:matrix,
@@ -610,13 +437,12 @@ urls.forEach((urlValue,urlKey)=>{
                 let fileName
                 let synopticArr, snakeArr
                 cy.removeDownloadsFiles()
-                cy.removeFixturesXLSXFiles()
                 cy.synopticRun({
                     language:'Hebrew',
                     files:['tehilim1mechon-mamre.txt','tehilim1chabad.txt']
                 })
-                cy.waitForRequest()
-                cy.downloadFile('a','הורד את כל התוצאות').then(()=>{
+                cy.enterEmail()
+                cy.downloadEmailResultsFile({vertical:'horiz'}).then(()=>{
                     cy.fileName().then(name=>{
                       fileName=name
                     })
@@ -628,9 +454,7 @@ urls.forEach((urlValue,urlKey)=>{
                     }).then(()=>{
                         cy.moveFileDownloadsTofixtures(fileName).then(()=>{
                             cy.setLanguageMode({language:'Hebrew'})            
-                            cy.goToSnake().then(()=>{
-                                cy.snakeRowsRun('Hebrew',fileName)
-                            })
+                            cy.runSnake({file:fileName,numColumnsPerRow:undefined,blankRows:undefined,includeSynopsisSnakeFile:true})
                         }).then(()=>{
                             cy.getSnakeMatrix().then((matrix) => {
                                 snakeArr=matrix

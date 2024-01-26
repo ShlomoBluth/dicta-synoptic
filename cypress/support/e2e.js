@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import '../../dicta-shared/index.js'
+import { MailSlurp } from "mailslurp-client";
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -31,3 +32,4 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 //     return false;
 //     //cy.visit('/')
 // });
+
