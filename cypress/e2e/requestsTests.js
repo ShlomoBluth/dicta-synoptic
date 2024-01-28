@@ -38,7 +38,8 @@ urls.forEach((urlValue,urlKey)=>{
     
             beforeEach(() => {
                 cy.screenSize({size:sizeValue})
-                cy.visitpage({url:urlValue})
+                cy.visit(urlValue)
+                // cy.visitpage({url:urlValue})
             })
 
             it('Error message for response with status code 500 when uploading files in hebrew mode',()=>{
