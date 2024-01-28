@@ -51,30 +51,30 @@ urls.forEach((urlValue,urlKey)=>{
             })
 
 
-            // it('Error message for response with status code 500 when uploading files in english mode',()=>{
-            //    cy.uploadRequest({
-            //        language:'English',
-            //        status:500,
-            //        message:'Failed to upload tehilim1mechon-mamre.txt ',
-            //    })
-            // })
+            it('Error message for response with status code 500 when uploading files in english mode',()=>{
+               cy.uploadRequest({
+                   language:'English',
+                   status:500,
+                   message:'Failed to upload tehilim1mechon-mamre.txt ',
+               })
+            })
 
 
-            // it('Error message for response with sa delay of 15 seconds when uploading files in hebrew mode',()=>{
-            //    cy.uploadRequest({
-            //        language:'Hebrew',
-            //        message:'העלאת הקובץ tehilim1mechon-mamre.txt נכשלה ',
-            //        delaySeconds: 10
-            //    })
-            // })
+            it('Error message for response with sa delay of 15 seconds when uploading files in hebrew mode',()=>{
+               cy.uploadRequest({
+                   language:'Hebrew',
+                   message:'העלאת הקובץ tehilim1mechon-mamre.txt נכשלה ',
+                   delaySeconds: 10
+               })
+            })
 
-            // it('Error message for response with sa delay of 15 seconds when uploading files in english mode',()=>{
-            //    cy.uploadRequest({
-            //        language:'English',
-            //        message:'Failed to upload tehilim1mechon-mamre.txt ',
-            //        delaySeconds: 10
-            //    })
-            // })
+            it('Error message for response with sa delay of 15 seconds when uploading files in english mode',()=>{
+               cy.uploadRequest({
+                   language:'English',
+                   message:'Failed to upload tehilim1mechon-mamre.txt ',
+                   delaySeconds: 10
+               })
+            })
 
 
             // it('Error message for response with status code 500 when clicking the run button of synoptic page'+
