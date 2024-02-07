@@ -46,7 +46,7 @@ urls.forEach((urlValue,urlKey)=>{
 
             beforeEach(()=>{
                 cy.screenSize({size:sizeValue})
-                // cy.visitpage({url:urlValue})
+                cy.visitpage({url:urlValue})
             })
 
             it('Synoptic run in hebrew mode',()=>{
