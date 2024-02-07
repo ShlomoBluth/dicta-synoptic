@@ -46,7 +46,30 @@ urls.forEach((urlValue,urlKey)=>{
 
             beforeEach(()=>{
                 cy.screenSize({size:sizeValue})
-                cy.visitpage({url:urlValue})
+                // cy.visitpage({url:urlValue})
+                function visitpage(Attempts){
+                    cy.wrap(Attempts).should('be.lt', 4)
+                    cy.intercept('/').as('webreq'+Attempts)
+                    cy.visit(url,{
+                      retryOnStatusCodeFailure: true,
+                      timeout: 600000,
+                      headers: {
+                        Connection: "Keep-Alive"
+                      }
+                    })
+                    // cy.wait('@webreq'+Attempts).then(()=>{
+                    //   cy.get('body').then($body=>{
+                    //     cy.log('home '+$body.find('#home').length)
+                    //     if($body.find('#home').length==0 && $body.find('[class*="main-content"]').length==0
+                    //     &&$body.find('[class="search"]').length==0 && $body.find('[class*="site-wrap"]').length==0 
+                    //     &&$body.find('[class="container h-100"]').length==0&&$body.find('[id*="body"]').length==0){
+                    //       visitpage(Attempts+1)
+                    //     }
+                    //   })
+                    // })
+                  }
+                  visitpage(0)
+  
             })
 
             it('Synoptic run in hebrew mode',()=>{
