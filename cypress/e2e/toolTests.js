@@ -50,7 +50,7 @@ urls.forEach((urlValue,urlKey)=>{
                 function visitpage(Attempts){
                     cy.wrap(Attempts).should('be.lt', 4)
                     cy.intercept('/').as('webreq'+Attempts)
-                    cy.visit(url,{
+                    cy.visit(urlValue,{
                       retryOnStatusCodeFailure: true,
                       timeout: 600000,
                       headers: {
