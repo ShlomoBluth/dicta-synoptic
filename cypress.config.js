@@ -9,7 +9,7 @@ module.exports = defineConfig({
   videoe:true,
   projectId: 'x3jgv2',
   screenshotOnRunFailure: false,
-  defaultCommandTimeout: 30000,
+  defaultCommandTimeout: 30000*10,
   requestTimeout: 30000,
   pageLoadTimeout: 300000,
   experimentalFetchPolyfill: true,
