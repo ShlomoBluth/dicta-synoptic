@@ -235,7 +235,7 @@ urls.forEach((urlValue,urlKey)=>{
                 const  success_message= ['The files were successfully uploaded', 'הקבצים הועלו בהצלחה']
                 const regex = new RegExp(`${success_message.join('|')}`, 'g')
                 cy.get('.env-wrapper > .mt-1',{timeout:60000}).contains(regex,{timeout:60000}).should('exist')
-                cy.get('#input-email-upload').type('lomibluth@gmail.com')
+                cy.get('#input-email-upload').type(Cypress.env('emailAddress'), { force: true })
                 cy.get('#email-form > .btn').click({force: true})
                 cy.get('.px-5').should('contain','קובץ התוצאות של השוואת הגרסאות ישלח לדוא״ל')
             })
