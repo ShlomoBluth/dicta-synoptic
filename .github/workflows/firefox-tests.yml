@@ -12,8 +12,8 @@ jobs:
     name: Run on firefox
     runs-on: ubuntu-latest
     container: 
-      image: cypress/browsers:node14.16.0-chrome89-ff86
-      options: --user 1001
+      image: cypress/browsers:node10.16.0-chrome77-ff71
+      # options: --user 1001
 
 
     steps:
