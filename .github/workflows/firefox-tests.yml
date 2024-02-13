@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: cypress/browsers:node-20.11.0-chrome-121.0.6167.85-1-ff-120.0-edge-121.0.2277.83-1
-      options: --user 1001
+      options: --user 0
 
 
     steps:
     - name: Install Git LFS
       run: |
-        sudo apt-get install -y git-lfs
-        sudo git lfs install
+        apt-get install -y git-lfs
+        git lfs install
     
 
     
