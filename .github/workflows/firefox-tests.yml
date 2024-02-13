@@ -31,7 +31,7 @@ jobs:
 
     - name: Install a project with a clean slate
       run: |
-        npm install --save-dev cypress@13.0.1
+        npm install --save-dev cypress@latest
         npm install cypress-multi-reporters --save-dev
         npm install mochawesome --save-dev
         # $(npm bin)/cypress cache path
