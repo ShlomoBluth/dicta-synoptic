@@ -34,7 +34,7 @@ jobs:
         # $(npm bin)/cypress verify
         mkdir public
         mkdir public/videos
-        ls
+        ls cypress
 
     - name: Set var 
       run: |
@@ -84,9 +84,10 @@ jobs:
           else
             cat requestsTest.log; exit 1
           fi
-        fi 
+        fi
+        ls cypress
       if: ${{always() && (env.REQUESTS_TESTS == 'true')}}
-
+      
 
     - name: Copy test execution videos 
       run: |
