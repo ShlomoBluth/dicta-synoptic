@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: cypress/browsers:latest
+      options: --user 0
 
 
     steps:
