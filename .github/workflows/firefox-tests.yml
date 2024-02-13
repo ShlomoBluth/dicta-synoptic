@@ -9,28 +9,18 @@ on:
 
 jobs:
   cypress-e2e:
-    runs-on: ubuntu-latest
-    container: 
-      image: cypress/browsers:node14.16.0-chrome89-ff86
-      options: --user 0
-
-
-    steps:
-    - name: Install Git LFS
-      run: |
-        apt-get install git-lfs -y
-        git lfs install
-
-  cypress-fifefox-ducer:
     name: Run on firefox
     runs-on: ubuntu-latest
     container: 
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
-  
-  
-    steps:
 
+
+    steps:
+    - name: Install Git LFS
+      run: |
+        sudo apt-get install git-lfs -y
+        sudo git lfs install
     
     - uses: actions/checkout@v3
       with: 
