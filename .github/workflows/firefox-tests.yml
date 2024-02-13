@@ -12,7 +12,7 @@ jobs:
     name: Run on firefox
     runs-on: ubuntu-latest
     container: 
-      image: cypress/browsers:node14.16.0-chrome89-ff86
+      image: cypress/browsers:node12.18.3-chrome83-ff77
       # cypress/browsers:node14.16.0-chrome89-ff86
       # options: --user 1001
 
@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Install Git LFS
       run: |
-        sudo apt-get install git-lfs -y
+        apt-get install git-lfs -y
         git lfs install
     
     - uses: actions/checkout@v3
