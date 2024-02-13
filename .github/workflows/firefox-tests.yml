@@ -18,6 +18,12 @@ jobs:
 
 
     steps:
+    - name: Update package lists
+      run: sudo apt-get update
+
+
+
+    
     - name: Install Git LFS
       run: |
         apt-get update
