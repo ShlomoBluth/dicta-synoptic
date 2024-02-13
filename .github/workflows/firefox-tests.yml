@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: ypress/browsers:node14.16.0-chrome89-ff86
-      # cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
 
 
