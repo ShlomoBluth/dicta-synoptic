@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: cypress/browsers:node14.17.6-chrome100-ff98
-      options: --user 0
+      options: --user 1001
 
 
     steps:
