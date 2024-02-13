@@ -12,8 +12,8 @@ jobs:
     name: Run on firefox
     runs-on: ubuntu-latest
     container: 
-      image: cypress/browsers:latest
-      options: --user 1
+      image: cypress/included:8.2.0
+      # options: --user 1
 
 
     steps:
