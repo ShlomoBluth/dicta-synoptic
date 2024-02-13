@@ -17,10 +17,10 @@ jobs:
 
 
     steps:
-    # - name: Install Git LFS
-    #   run: |
-    #     apt-get install -y git-lfs
-    #     git lfs install
+    - name: Install Git LFS
+      run: |
+        apt-get install -y git-lfs
+        git lfs install
     
 
     
