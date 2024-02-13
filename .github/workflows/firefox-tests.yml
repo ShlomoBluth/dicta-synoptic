@@ -16,8 +16,16 @@ jobs:
       options: --user 1001
 
     steps:
+    - name: Install Git LFS
+      run: |
+        apt-get install -y git-lfs
+        git lfs install
+    
+
+    
     - uses: actions/checkout@v4
       with: 
+        lfs: true
         submodules: true
 
 
@@ -26,9 +34,9 @@ jobs:
         npm install --save-dev cypress@12.17.1
         npm install cypress-multi-reporters --save-dev
         npm install mochawesome --save-dev
-        $(npm bin)/cypress cache path
-        $(npm bin)/cypress cache list
-        $(npm bin)/cypress verify
+        # $(npm bin)/cypress cache path
+        # $(npm bin)/cypress cache list
+        # $(npm bin)/cypress verify
         mkdir public
         mkdir public/videos
 
