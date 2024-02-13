@@ -19,7 +19,7 @@ jobs:
     steps:
     - name: Install Git LFS
       run: |
-        install git-lfs -y
+        install git-lfs
         git lfs install
     
     - uses: actions/checkout@v3
