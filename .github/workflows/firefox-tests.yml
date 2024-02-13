@@ -12,7 +12,7 @@ jobs:
     name: Run on firefox
     runs-on: ubuntu-latest
     container: 
-      image: cypress/browsers:node16.16.0-chrome107-ff107
+      image: docker pull cypress/browsers:latest
 
 
     steps:
