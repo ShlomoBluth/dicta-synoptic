@@ -20,7 +20,7 @@ module.exports = defineConfig({
   env: {
     DEV_URL: 'https://synoptic-dev--condescending-darwin-5b410d.netlify.app/',
     LIVE_URL: 'https://synoptic.dicta.org.il/',
-    TOOL_TESTS: false,
+    TOOL_TESTS: true,
     REQUESTS_TESTS: true,
     RECORD_KEY: 'c1c71d00-c206-4fa2-b4db-f76af85e322f',
     API_KEY: '2d3fa11eac4a5ebb6af11d8a190b771d0d034d50e318aa6a8f6604139ebffd61',
