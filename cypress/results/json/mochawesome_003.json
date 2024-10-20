@@ -1,0 +1,163 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2024-02-13T13:25:17.208Z",
+    "end": "2024-02-13T13:27:43.542Z",
+    "duration": 146334,
+    "testsRegistered": 4,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b30444d8-1c9d-4d9c-9cd5-844b94eb55d6",
+      "title": "",
+      "fullFile": "cypress\\e2e\\requestsTests.js",
+      "file": "cypress\\e2e\\requestsTests.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "64e72f90-d87c-4457-8f48-55a99829fc3c",
+          "title": "requestsTests live desktop",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Error message for response with status code 500 when uploading files in hebrew mode",
+              "fullTitle": "requestsTests live desktop Error message for response with status code 500 when uploading files in hebrew mode",
+              "timedOut": null,
+              "duration": 11172,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"videos/requestsTests.js.mp4\"",
+              "code": "cy.uploadRequest({\n  language: 'Hebrew',\n  status: 500,\n  message: 'העלאת הקובץ tehilim1mechon-mamre.txt נכשלה '\n});",
+              "err": {},
+              "uuid": "f205edb8-1b64-44bc-8443-0c11e36a9fdc",
+              "parentUUID": "64e72f90-d87c-4457-8f48-55a99829fc3c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Error message for response with status code 500 when uploading files in english mode",
+              "fullTitle": "requestsTests live desktop Error message for response with status code 500 when uploading files in english mode",
+              "timedOut": null,
+              "duration": 10714,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"videos/requestsTests.js.mp4\"",
+              "code": "cy.uploadRequest({\n  language: 'English',\n  status: 500,\n  message: 'Failed to upload tehilim1mechon-mamre.txt '\n});",
+              "err": {},
+              "uuid": "0755d6d3-6277-412f-9bd0-17282a3fc5bf",
+              "parentUUID": "64e72f90-d87c-4457-8f48-55a99829fc3c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Error message for response with sa delay of 15 seconds when uploading files in hebrew mode",
+              "fullTitle": "requestsTests live desktop Error message for response with sa delay of 15 seconds when uploading files in hebrew mode",
+              "timedOut": null,
+              "duration": 60523,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"videos/requestsTests.js.mp4\"",
+              "code": "cy.uploadRequest({\n  language: 'Hebrew',\n  message: 'העלאת הקובץ tehilim1mechon-mamre.txt נכשלה ',\n  delaySeconds: 10\n});",
+              "err": {},
+              "uuid": "1d45631d-0ab3-448b-b5f4-c4c5c4b2e66e",
+              "parentUUID": "64e72f90-d87c-4457-8f48-55a99829fc3c",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Error message for response with sa delay of 15 seconds when uploading files in english mode",
+              "fullTitle": "requestsTests live desktop Error message for response with sa delay of 15 seconds when uploading files in english mode",
+              "timedOut": null,
+              "duration": 61631,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": "\"videos/requestsTests.js.mp4\"",
+              "code": "cy.uploadRequest({\n  language: 'English',\n  message: 'Failed to upload tehilim1mechon-mamre.txt ',\n  delaySeconds: 10\n});",
+              "err": {},
+              "uuid": "b5e44b40-07f2-4d49-8474-bf6ba7b233fb",
+              "parentUUID": "64e72f90-d87c-4457-8f48-55a99829fc3c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "f205edb8-1b64-44bc-8443-0c11e36a9fdc",
+            "0755d6d3-6277-412f-9bd0-17282a3fc5bf",
+            "1d45631d-0ab3-448b-b5f4-c4c5c4b2e66e",
+            "b5e44b40-07f2-4d49-8474-bf6ba7b233fb"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 144040,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "cypress/results/json",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

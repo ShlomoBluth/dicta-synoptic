@@ -6,7 +6,7 @@ const readXlsxFile = require('read-excel-file/node')
 
 
 module.exports = defineConfig({
-  videoe:true,
+  videoe: true,
   projectId: 'x3jgv2',
   screenshotOnRunFailure: false,
   defaultCommandTimeout: 30000*10,
