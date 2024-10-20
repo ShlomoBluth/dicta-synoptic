@@ -15,7 +15,10 @@ jobs:
       image: cypress/browsers:node14.16.0-chrome89-ff86
       options: --user 1001
 
+
     steps:
+
+    
     - uses: actions/checkout@v4
       with: 
         submodules: true
@@ -23,14 +26,15 @@ jobs:
 
     - name: Install a project with a clean slate
       run: |
-        npm install --save-dev cypress@12.17.1
+        npm install --save-dev cypress@latest
         npm install cypress-multi-reporters --save-dev
         npm install mochawesome --save-dev
-        $(npm bin)/cypress cache path
-        $(npm bin)/cypress cache list
-        $(npm bin)/cypress verify
+        # $(npm bin)/cypress cache path
+        # $(npm bin)/cypress cache list
+        # $(npm bin)/cypress verify
         mkdir public
         mkdir public/videos
+        ls cypress
 
     - name: Set var 
       run: |
@@ -80,9 +84,10 @@ jobs:
           else
             cat requestsTest.log; exit 1
           fi
-        fi 
+        fi
+        ls cypress
       if: ${{always() && (env.REQUESTS_TESTS == 'true')}}
-
+      
 
     - name: Copy test execution videos 
       run: |
